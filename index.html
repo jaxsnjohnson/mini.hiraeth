@@ -1001,28 +1001,40 @@
         showProgress(50);
         buildUniqueOptions();
         restoreState();
+
+        // ✅ Auto-switch to list view on mobile if no saved preference
+        if (!localStorage.getItem(STORAGE_KEY) && window.innerWidth < 768) {
+            state.viewMode = "list";
+        }
+
         buildFilterGroups();
         buildQuickFilters();
         wireControls();
         showProgress(70);
         applyAndRender();
 
-        // FIX: Defer deep link execution until after the first paint.
-        requestAnimationFrame(() => {
-          const params = new URLSearchParams(window.location.search);
-          const miniId = params.get("id");
-          if (miniId) {
-            const targetMini = allMinis.find(
-              (m) =>
-                m.id.toLowerCase() ===
-                decodeURIComponent(miniId).toLowerCase()
-            );
-            if (targetMini) {
-              setTimeout(() => openDetail(targetMini), 50);
+        // ✅ Live resize detection
+        window.addEventListener("resize", () => {
+            if (window.innerWidth < 768 && state.viewMode !== "list") {
+                state.viewMode = "list";
+                updateViewModeUI();
+                applyAndRender();
             }
-          }
         });
-      }
+
+        requestAnimationFrame(() => {
+            const params = new URLSearchParams(window.location.search);
+            const miniId = params.get("id");
+            if (miniId) {
+                const targetMini = allMinis.find(
+                    (m) => m.id.toLowerCase() === decodeURIComponent(miniId).toLowerCase()
+                );
+                if (targetMini) {
+                    setTimeout(() => openDetail(targetMini), 50);
+                }
+            }
+        });
+    }
 
       async function loadData() {
         try {
