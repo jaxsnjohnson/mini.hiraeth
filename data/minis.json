@@ -45,5 +45,93 @@
     },
     "tags": [],
     "notes": "Antinua Thiel is the undisputed star of her own dark melodrama."
+  },
+  {
+    "id": "cd023d44-cba2-4cf2-9909-5ec1164d225e",
+    "name": "Cave Mother",
+    "type": "Undead",
+    "size": "Medium",
+    "source": {
+      "manufacturer": "Trenchworx",
+      "set": "MCDM - Khorsekef, The Infinite",
+      "acquisition_date": "",
+      "acquisition_location": "https://www.trenchworx.com/collections/mcdm-physical-collection/products/mcdm-khorsekef-the-infinite",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "Jax's House Living Room",
+      "storage": "Behind DM"
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Jax SN Johnson",
+      "date": "2025-02-11",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [
+        "Icebeach"
+      ],
+      "role": "NPC",
+      "frequency": "Rare"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/mini-cave-mother-main.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [
+        "images/minis/mini-cave-mother-ai.webp"
+      ],
+      "reference": [
+        "images/minis/mini-cave-mother-trenchwork-store.webp"
+      ]
+    },
+    "tags": [],
+    "notes": ""
+  },
+  {
+    "id": "09cc8be2-94b7-4871-9647-10bff1dd4b12",
+    "name": "Wyss' Folly",
+    "type": "Undead",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "",
+      "acquisition_date": "",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "Jax's Living Room",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Jax SN Johnson",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": "Rare"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/mini-wyss-folly-main.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": []
+    },
+    "tags": [],
+    "notes": ""
   }
 ]
