@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Minis Data Editor (Local)</title>
+    <meta
+      name="description"
+      content="Local editor for D&D minis data. Load, edit, and export
+      data/minis.json to commit to GitHub."
+    />
+    <style>
+      :root {
+        --bg: #0f1115;
+        --panel: #171a21;
+        --muted: #a9b1bd;
+        --text: #e6eaf0;
+        --accent: #72a1ff;
+        --accent-2: #ffd166;
+        --border: #232737;
+        --chip: #1f2330;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
+          0 8px 24px rgba(0, 0, 0, 0.12);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 500 15px/1.5 system-ui, Segoe UI, Roboto, Ubuntu, Cantarell,
+          Noto Sans, Arial;
+      }
+
+      header {
+        padding: 16px;
+        display: grid;
+        gap: 6px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: 0.2px;
+      }
+
+      header .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      @media (max-width: 900px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 10px;
+      }
+
+      .hstack {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .vstack {
+        display: grid;
+        gap: 8px;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      input[type="search"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px 10px;
+        background: #121520;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        outline: none;
+        font-family: inherit;
+        font-size: 14px;
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      .btn {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #121520;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .btn.primary {
+        background: #1b2132;
+        border-color: #2a3655;
+        color: var(--text);
+      }
+
+      .btn.warn {
+        border-color: #5e3c00;
+        background: #251d0c;
+        color: #ffd166;
+      }
+
+      .btn.danger {
+        border-color: #5a2323;
+        background: #2a1515;
+        color: #ff6b6b;
+      }
+
+      .toolbar,
+      .importer,
+      .exporter {
+        display: grid;
+        gap: 8px;
+      }
+
+      .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .list {
+        display: grid;
+        gap: 6px;
+        max-height: 60vh;
+        overflow: auto;
+        padding-right: 6px;
+      }
+
+      .item {
+        border: 1px solid var(--border);
+        background: #121520;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+      }
+
+      .item.active {
+        border-color: var(--accent);
+      }
+
+      .grid2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px 12px;
+      }
+
+      .grid3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .section-title {
+        font-size: 13px;
+        color: var(--muted);
+        padding-bottom: 4px;
+        border-bottom: 1px dashed var(--border);
+        margin-bottom: 8px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--chip);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 4px 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 6px 10px;
+        font-size: 13px;
+      }
+
+      .kv div {
+        padding: 2px 0;
+      }
+
+      .danger-note {
+        color: #ff6b6b;
+        font-size: 13px;
+      }
+
+      .ok-note {
+        color: #7bd88f;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Minis Data Editor (Local)</h1>
+      <div class="muted">
+        Load your data/minis.json, edit, then export a new minis.json to
+        commit.
+        This runs locally. It cannot push to GitHub.
+      </div>
+      <div class="hstack">
+        <span id="summary" class="pill">0 minis</span>
+        <span id="dirty" class="pill">Saved</span>
+        <span id="ls" class="pill">Local backup: none</span>
+      </div>
+    </header>
+
+    <main>
+      <aside class="panel">
+        <div class="toolbar">
+          <div class="hstack">
+            <button id="newBtn" class="btn primary">New</button>
+            <button id="dupBtn" class="btn">Duplicate</button>
+            <button id="delBtn" class="btn danger">Delete</button>
+          </div>
+          <input
+            id="listSearch"
+            type="search"
+            placeholder="Filter list by name, id, type…"
+          />
+          <select id="listSort">
+            <option value="name">Sort: Name</option>
+            <option value="id">Sort: ID</option>
+            <option value="acq">Sort: Acquired</option>
+            <option value="paint">Sort: Painted</option>
+          </select>
+          <div id="miniList" class="list"></div>
+        </div>
+
+        <div style="height: 12px"></div>
+
+        <div class="importer">
+          <div class="section-title">Load data</div>
+          <div class="vstack">
+            <input id="fileOpen" type="file" accept="application/json" />
+            <div class="hstack">
+              <input
+                id="urlInput"
+                type="text"
+                placeholder="URL (e.g. data/minis.json)"
+              />
+              <button id="loadUrlBtn" class="btn">Load URL</button>
+            </div>
+            <div class="hstack">
+              <button id="saveLsBtn" class="btn">Save to Local Backup</button>
+              <button id="loadLsBtn" class="btn">Load Local Backup</button>
+              <button id="clearLsBtn" class="btn">Clear Backup</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="height: 12px"></div>
+
+        <div class="exporter">
+          <div class="section-title">Export</div>
+          <div class="hstack">
+            <button id="exportBtn" class="btn primary">
+              Download minis.json
+            </button>
+            <button id="exportTsBtn" class="btn">
+              Download backup (dated)
+            </button>
+          </div>
+          <div class="vstack small">
+            <span>After export, replace data/minis.json in your repo and
+              commit.</span>
+          </div>
+        </div>
+
+        <div style="height: 12px"></div>
+
+        <div class="panel">
+          <div class="section-title">Validation</div>
+          <div class="vstack">
+            <button id="validateBtn" class="btn">Run Validation</button>
+            <div id="validation" class="small"></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="section-title">Mini details</div>
+
+        <div class="grid2">
+          <div>
+            <label for="id">ID</label>
+            <div class="hstack">
+              <input id="id" type="text" placeholder="unique_id" />
+              <button id="idSuggest" class="btn">Suggest</button>
+            </div>
+            <div class="small">
+              Lowercase, use hyphens/underscores. Must be unique.
+            </div>
+          </div>
+          <div>
+            <label for="name">Name</label>
+            <input id="name" type="text" placeholder="Mini name" />
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div>
+            <label for="type">Type</label>
+            <input id="type" type="text" placeholder="Dragon, Undead…" />
+          </div>
+          <div>
+            <label for="size">Size</label>
+            <select id="size">
+              <option value="">—</option>
+              <option>Tiny</option>
+              <option>Small</option>
+              <option>Medium</option>
+              <option>Large</option>
+              <option>Huge</option>
+              <option>Gargantuan</option>
+            </select>
+          </div>
+          <div>
+            <label for="role">Role</label>
+            <select id="role">
+              <option value="">—</option>
+              <option>Player Character</option>
+              <option>NPC</option>
+              <option>Monster</option>
+              <option>Terrain</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">Source / Acquisition</div>
+        <div class="grid3">
+          <div>
+            <label for="manufacturer">Manufacturer</label>
+            <input
+              id="manufacturer"
+              type="text"
+              placeholder="WizKids, Reaper…"
+            />
+          </div>
+          <div>
+            <label for="set">Set</label>
+            <input id="set" type="text" placeholder="Set or expansion" />
+          </div>
+          <div>
+            <label for="origin_type">Origin</label>
+            <select id="origin_type">
+              <option value="">—</option>
+              <option>Retail Purchase</option>
+              <option>3D Print</option>
+              <option>Kickstarter</option>
+              <option>Gift</option>
+              <option>Commission</option>
+              <option>Custom Sculpt</option>
+              <option>Bulk Lot</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label for="acq_date">Acquisition Date</label>
+            <input id="acq_date" type="date" />
+          </div>
+          <div>
+            <label for="acq_loc">Acquisition Location</label>
+            <input id="acq_loc" type="text" placeholder="Store, site…" />
+          </div>
+        </div>
+
+        <div class="section-title">Location / Storage</div>
+        <div class="grid2">
+          <div>
+            <label for="room">Room</label>
+            <input id="room" type="text" placeholder="Game Room…" />
+          </div>
+          <div>
+            <label for="storage">Storage</label>
+            <input
+              id="storage"
+              type="text"
+              placeholder="Shelf, bin, case…"
+            />
+          </div>
+        </div>
+
+        <div class="section-title">Paint</div>
+        <div class="grid3">
+          <div>
+            <label for="paint_status">Status</label>
+            <select id="paint_status">
+              <option value="">—</option>
+              <option>Unpainted</option>
+              <option>Primed</option>
+              <option>Painted</option>
+              <option>Needs Touch-up</option>
+            </select>
+          </div>
+          <div>
+            <label for="painter">Painter</label>
+            <input id="painter" type="text" placeholder="Your name…" />
+          </div>
+          <div>
+            <label for="paint_date">Paint Date</label>
+            <input id="paint_date" type="date" />
+          </div>
+        </div>
+        <div class="grid2">
+          <div>
+            <label for="paint_style">Paint Style</label>
+            <input id="paint_style" type="text" placeholder="Tabletop…" />
+          </div>
+          <div>
+            <label for="paint_brand">Paint Brand(s)</label>
+            <input
+              id="paint_brand"
+              type="text"
+              placeholder="Comma-separated (Vallejo, Citadel)"
+            />
+          </div>
+        </div>
+
+        <div class="section-title">Usage</div>
+        <div class="grid2">
+          <div>
+            <label for="frequency">Frequency</label>
+            <select id="frequency">
+              <option value="">—</option>
+              <option>Rare</option>
+              <option>Occasional</option>
+              <option>Often</option>
+            </select>
+          </div>
+          <div>
+            <label for="campaigns">Campaigns</label>
+            <input
+              id="campaigns"
+              type="text"
+              placeholder="Comma-separated"
+            />
+          </div>
+        </div>
+
+        <div class="section-title">Images (one path per line)</div>
+        <div class="hstack" style="margin-bottom: 8px">
+          <button id="imgSuggest" class="btn">Suggest Paths</button>
+          <span class="small">Suggests paths based on ID if fields are
+            empty.</span>
+        </div>
+        <div class="grid2">
+          <div>
+            <label for="img_main">Main Photos</label>
+            <textarea id="img_main" rows="3"></textarea>
+          </div>
+          <div>
+            <label for="img_ai">AI Art</label>
+            <textarea id="img_ai" rows="3"></textarea>
+          </div>
+          <div>
+            <label for="img_ref">Reference Images</label>
+            <textarea id="img_ref" rows="3"></textarea>
+          </div>
+          <div>
+            <label for="img_after">"After" Paint Photos</label>
+            <textarea id="img_after" rows="3"></textarea>
+          </div>
+          <div>
+            <label for="img_before">"Before" Paint Photos</label>
+            <textarea id="img_before" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="section-title">Other</div>
+        <div class="grid2">
+          <div>
+            <label for="condition">Condition</label>
+            <input id="condition" type="text" placeholder="Mint…" />
+          </div>
+          <div>
+            <label for="tags">Tags</label>
+            <input id="tags" type="text" placeholder="Comma-separated" />
+          </div>
+        </div>
+        <div>
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Freeform notes…"></textarea>
+        </div>
+
+        <div style="height: 8px"></div>
+
+        <div class="hstack">
+          <button id="applyBtn" class="btn primary">Apply Changes</button>
+          <span class="small">Changes auto-save to memory; apply to update
+            list.</span>
+        </div>
+
+        <div style="height: 12px"></div>
+
+        <div class="panel">
+          <div class="section-title">Selected mini (read-only)</div>
+          <div class="kv small" id="miniInfo"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const LS_KEY = "minisEditorBackupV2";
+
+      let minis = [];
+      let selectedId = null;
+      let isDirty = false;
+
+      const $ = (s) => document.querySelector(s);
+      const $list = $("#miniList");
+
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+
+      function setDirty(d) {
+        isDirty = d;
+        $("#dirty").textContent = d ? "Unsaved changes" : "Saved";
+        $("#dirty").style.color = d ? "#ffd166" : "inherit";
+      }
+
+      function summary() {
+        const n = minis.length;
+        $("#summary").textContent = `${n} mini${n === 1 ? "" : "s"}`;
+      }
+
+      function loadFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!Array.isArray(data)) throw new Error("JSON must be an array");
+            minis = data.map(normalizeMini);
+            selectedId = minis[0]?.id || null;
+            renderList();
+            loadToForm(findById(selectedId));
+            setDirty(false);
+            summary();
+          } catch (err) {
+            alert("Error parsing JSON: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      async function loadFromUrl(url) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+          const data = await res.json();
+          if (!Array.isArray(data)) throw new Error("JSON must be an array");
+          minis = data.map(normalizeMini);
+          selectedId = minis[0]?.id || null;
+          renderList();
+          loadToForm(findById(selectedId));
+          setDirty(false);
+          summary();
+        } catch (err) {
+          alert("Failed to load URL: " + err.message);
+        }
+      }
+
+      function toArray(val) {
+        if (Array.isArray(val)) return val;
+        if (typeof val === "string" && val.trim()) return [val.trim()];
+        return [];
+      }
+
+      function normalizeMini(m) {
+        const safe = (v, d = "") => (v == null ? d : v);
+        const images = m.images || {};
+        return {
+          id: safe(m.id),
+          name: safe(m.name),
+          type: safe(m.type),
+          size: safe(m.size),
+          source: {
+            manufacturer: safe(m?.source?.manufacturer),
+            set: safe(m?.source?.set),
+            acquisition_date: safe(m?.source?.acquisition_date),
+            acquisition_location: safe(m?.source?.acquisition_location),
+            origin_type: safe(m?.source?.origin_type),
+          },
+          location: {
+            room: safe(m?.location?.room),
+            storage: safe(m?.location?.storage),
+          },
+          paint: {
+            status: safe(m?.paint?.status),
+            painter: safe(m?.paint?.painter),
+            date: safe(m?.paint?.date),
+            style: safe(m?.paint?.style),
+            brand: toArray(m?.paint?.brand),
+          },
+          usage: {
+            campaigns: toArray(m?.usage?.campaigns),
+            role: safe(m?.usage?.role),
+            frequency: safe(m?.usage?.frequency),
+          },
+          condition: safe(m?.condition),
+          images: {
+            main: toArray(images.main),
+            before_paint: toArray(images.before_paint),
+            after_paint: toArray(images.after_paint),
+            ai_art: toArray(images.ai_art),
+            reference: toArray(images.reference),
+          },
+          tags: toArray(m?.tags),
+          notes: safe(m?.notes),
+        };
+      }
+
+      function findById(id) {
+        return minis.find((m) => m.id === id) || null;
+      }
+
+      function renderList() {
+        const q = $("#listSearch").value.trim().toLowerCase();
+        const sort = $("#listSort").value;
+
+        let items = [...minis];
+
+        items = items.filter((m) => {
+          const s =
+            [
+              m.name,
+              m.id,
+              m.type,
+              m.size,
+              m.source?.manufacturer,
+              m.paint?.status,
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase() || "";
+          return q ? s.includes(q) : true;
+        });
+
+        const toTime = (s) => (s ? Date.parse(s) || 0 : 0);
+        items.sort((a, b) => {
+          if (sort === "id") return collator.compare(a.id, b.id);
+          if (sort === "acq") {
+            return (
+              toTime(b.source.acquisition_date) -
+              toTime(a.source.acquisition_date)
+            );
+          }
+          if (sort === "paint") {
+            return toTime(b.paint.date) - toTime(a.paint.date);
+          }
+          return collator.compare(a.name, b.name);
+        });
+
+        $list.innerHTML = "";
+        for (const m of items) {
+          const div = document.createElement("div");
+          div.className = "item" + (m.id === selectedId ? " active" : "");
+          div.tabIndex = 0;
+          div.innerHTML =
+            `<div><strong>${escapeHtml(m.name || "(no name)")}</strong></div>` +
+            `<div class="small">${escapeHtml(m.id || "")}</div>` +
+            `<div class="small">${escapeHtml(
+              [m.type, m.size, m.paint.status].filter(Boolean).join(" • ")
+            )}</div>`;
+          div.addEventListener("click", () => {
+            selectedId = m.id;
+            loadToForm(m);
+            renderList();
+          });
+          div.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              selectedId = m.id;
+              loadToForm(m);
+              renderList();
+            }
+          });
+          $list.appendChild(div);
+        }
+      }
+
+      function loadToForm(m) {
+        if (!m) {
+          clearForm();
+          $("#miniInfo").innerHTML = "";
+          return;
+        }
+        $("#id").value = m.id || "";
+        $("#name").value = m.name || "";
+        $("#type").value = m.type || "";
+        $("#size").value = m.size || "";
+        $("#role").value = m.usage.role || "";
+        $("#manufacturer").value = m.source.manufacturer || "";
+        $("#set").value = m.source.set || "";
+        $("#origin_type").value = m.source.origin_type || "";
+        $("#acq_date").value = m.source.acquisition_date || "";
+        $("#acq_loc").value = m.source.acquisition_location || "";
+        $("#room").value = m.location.room || "";
+        $("#storage").value = m.location.storage || "";
+        $("#paint_status").value = m.paint.status || "";
+        $("#painter").value = m.paint.painter || "";
+        $("#paint_date").value = m.paint.date || "";
+        $("#paint_style").value = m.paint.style || "";
+        $("#paint_brand").value = (m.paint.brand || []).join(", ");
+        $("#frequency").value = m.usage.frequency || "";
+        $("#campaigns").value = (m.usage.campaigns || []).join(", ");
+        $("#img_main").value = (m.images.main || []).join("\n");
+        $("#img_before").value = (m.images.before_paint || []).join("\n");
+        $("#img_after").value = (m.images.after_paint || []).join("\n");
+        $("#img_ai").value = (m.images.ai_art || []).join("\n");
+        $("#img_ref").value = (m.images.reference || []).join("\n");
+        $("#condition").value = m.condition || "";
+        $("#tags").value = (m.tags || []).join(", ");
+        $("#notes").value = m.notes || "";
+        renderMiniInfo(m);
+      }
+
+      function clearForm() {
+        for (const id of [
+          "id",
+          "name",
+          "type",
+          "size",
+          "role",
+          "manufacturer",
+          "set",
+          "origin_type",
+          "acq_date",
+          "acq_loc",
+          "room",
+          "storage",
+          "paint_status",
+          "painter",
+          "paint_date",
+          "paint_style",
+          "paint_brand",
+          "frequency",
+          "campaigns",
+          "img_main",
+          "img_before",
+          "img_after",
+          "img_ai",
+          "img_ref",
+          "condition",
+          "tags",
+          "notes",
+        ]) {
+          $(`#${id}`).value = "";
+        }
+      }
+
+      // *** THIS FUNCTION IS CORRECTED ***
+      function getFormData() {
+        const brands = splitCsv($("#paint_brand").value);
+        const campaigns = splitCsv($("#campaigns").value);
+        const tags = splitCsv($("#tags").value);
+
+        return {
+          id: $("#id").value.trim(),
+          name: $("#name").value.trim(),
+          type: $("#type").value.trim(),
+          size: $("#size").value.trim(),
+          source: {
+            manufacturer: $("#manufacturer").value.trim(),
+            set: $("#set").value.trim(),
+            acquisition_date: $("#acq_date").value.trim(),
+            acquisition_location: $("#acq_loc").value.trim(),
+            origin_type: $("#origin_type").value.trim(),
+          },
+          location: {
+            room: $("#room").value.trim(),
+            storage: $("#storage").value.trim(),
+          },
+          paint: {
+            status: $("#paint_status").value.trim(),
+            painter: $("#painter").value.trim(),
+            date: $("#paint_date").value.trim(),
+            style: $("#paint_style").value.trim(),
+            brand: brands,
+          },
+          usage: {
+            campaigns: campaigns,
+            role: $("#role").value.trim(),
+            frequency: $("#frequency").value.trim(),
+          },
+          condition: $("#condition").value.trim(),
+          images: {
+            main: splitLines($("#img_main").value),
+            before_paint: splitLines($("#img_before").value),
+            after_paint: splitLines($("#img_after").value),
+            ai_art: splitLines($("#img_ai").value),
+            reference: splitLines($("#img_ref").value),
+          },
+          tags: tags,
+          notes: $("#notes").value,
+        };
+      }
+
+      function applyChanges() {
+        const m = getFormData();
+        const errors = validateMini(m, { checkIdUnique: true });
+        if (errors.length) {
+          alert("Please fix:\n\n" + errors.join("\n"));
+          return;
+        }
+        const idx = minis.findIndex((x) => x.id === selectedId);
+        if (idx >= 0) {
+          minis[idx] = m;
+        } else {
+          minis.push(m);
+        }
+        selectedId = m.id;
+        renderList();
+        loadToForm(m);
+        setDirty(true);
+        renderMiniInfo(m);
+        summary();
+      }
+
+      function newMini() {
+        const base = "new-mini";
+        let id = `${base}-01`;
+        let i = 1;
+        while (minis.some((m) => m.id === id)) {
+          i++;
+          id = `${base}-${String(i).padStart(2, "0")}`;
+        }
+        const blank = normalizeMini({ id });
+        minis.push(blank);
+        selectedId = id;
+        renderList();
+        loadToForm(blank);
+        setDirty(true);
+        summary();
+      }
+
+      function duplicateMini() {
+        const src = findById(selectedId);
+        if (!src) return;
+        const base = src.id.replace(/-\d+$/, "");
+        let i = 2;
+        let id = `${base}-${String(i).padStart(2, "0")}`;
+        while (minis.some((m) => m.id === id)) {
+          i++;
+          id = `${base}-${String(i).padStart(2, "0")}`;
+        }
+        const copy = JSON.parse(JSON.stringify(src));
+        copy.id = id;
+        minis.push(copy);
+        selectedId = id;
+        renderList();
+        loadToForm(copy);
+        setDirty(true);
+        summary();
+      }
+
+      function deleteMini() {
+        const m = findById(selectedId);
+        if (!m) return;
+        const ok = confirm(
+          `Delete "${m.name || m.id}"? This cannot be undone.`
+        );
+        if (!ok) return;
+        minis = minis.filter((x) => x.id !== m.id);
+        selectedId = minis[0]?.id || null;
+        renderList();
+        loadToForm(findById(selectedId));
+        setDirty(true);
+        summary();
+      }
+
+      function exportJson(timestamped = false) {
+        const json = JSON.stringify(minis, null, 2);
+        const name = timestamped
+          ? `minis-${new Date().toISOString().replace(/[:.]/g, "-")}.json`
+          : "minis.json";
+        download(name, json);
+        setDirty(false);
+      }
+
+      function validateAll() {
+        const msgs = [];
+        const seen = new Set();
+        for (const m of minis) {
+          const errs = validateMini(m, { checkIdUnique: false });
+          if (seen.has(m.id)) {
+            errs.push("id must be unique");
+          }
+          seen.add(m.id);
+          errs.forEach((e) => msgs.push(`${m.id || "(no id)"}: ${e}`));
+        }
+        if (msgs.length === 0) {
+          $("#validation").innerHTML =
+            `<div class="ok-note">No issues found.</div>`;
+        } else {
+          $("#validation").innerHTML =
+            `<div class="danger-note">${msgs.length} issue(s):
+            <br>${msgs.map(escapeHtml).join("<br>")}</div>`;
+        }
+      }
+
+      function validateMini(m, opts = {}) {
+        const out = [];
+        const idOk = /^[a-z0-9]+[a-z0-9-_]*$/.test(m.id || "");
+        if (!m.id) out.push("missing id");
+        if (!idOk) out.push("id should be lowercase and use - or _ only");
+        if (opts.checkIdUnique) {
+          const dup = minis.some(
+            (x) => x.id === m.id && x.id !== selectedId
+          );
+          if (dup) out.push("id must be unique");
+        }
+        if (!m.name) out.push("missing name");
+        if (!m.type) out.push("missing type");
+        if (!m.size) out.push("missing size");
+        if (!m.images.main || m.images.main.length === 0)
+          out.push(
+            "images.main is empty (at least one main photo is recommended)"
+          );
+        return out;
+      }
+
+      function suggestId() {
+        const name = $("#name").value.trim();
+        const type = $("#type").value.trim();
+        const size = $("#size").value.trim();
+        let base = slug(name || type || "mini");
+        if (size) base += "_" + slug(size);
+        let id = base;
+        let i = 1;
+        while (minis.some((m) => m.id === id)) {
+          i++;
+          id = `${base}_${String(i).padStart(2, "0")}`;
+        }
+        $("#id").value = id;
+      }
+
+      function suggestImages() {
+        const id = $("#id").value.trim();
+        if (!id) {
+          alert("Set an ID first to suggest image paths.");
+          return;
+        }
+        if (!$("#img_main").value.trim()) {
+          $("#img_main").value = `images/minis/${id}.jpg`;
+        }
+        if (!$("#img_before").value.trim()) {
+          $("#img_before").value = `images/minis/${id}_before.jpg`;
+        }
+        if (!$("#img_after").value.trim()) {
+          $("#img_after").value = `images/minis/${id}_after.jpg`;
+        }
+        if (!$("#img_ai").value.trim()) {
+          $("#img_ai").value = `images/minis/${id}_ai_01.webp`;
+        }
+        if (!$("#img_ref").value.trim()) {
+          $("#img_ref").value = `images/minis/${id}_ref_01.jpg`;
+        }
+      }
+
+      function renderMiniInfo(m) {
+        const imgInfo = [
+          ["Main", (m.images.main || []).length],
+          ["AI Art", (m.images.ai_art || []).length],
+          ["Reference", (m.images.reference || []).length],
+          ["Before", (m.images.before_paint || []).length],
+          ["After", (m.images.after_paint || []).length],
+        ]
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(" | ");
+
+        const rows = [
+          ["ID", m.id],
+          ["Name", m.name],
+          ["Type", m.type],
+          ["Size", m.size],
+          ["Role", m.usage.role],
+          ["Manufacturer", m.source.manufacturer],
+          ["Set", m.source.set],
+          ["Origin", m.source.origin_type],
+          ["Acquired", m.source.acquisition_date],
+          ["Location", m.source.acquisition_location],
+          ["Room", m.location.room],
+          ["Storage", m.location.storage],
+          ["Paint", m.paint.status],
+          ["Painter", m.paint.painter],
+          ["Paint Date", m.paint.date],
+          ["Brands", (m.paint.brand || []).join(", ")],
+          ["Campaigns", (m.usage.campaigns || []).join(", ")],
+          ["Freq", m.usage.frequency],
+          ["Condition", m.condition],
+          ["Images", imgInfo],
+        ];
+        $("#miniInfo").innerHTML = rows
+          .map(
+            ([k, v]) =>
+              `<div class="muted">${escapeHtml(k)}</div>` +
+              `<div>${escapeHtml(v || "—")}</div>`
+          )
+          .join("");
+      }
+
+      function saveToLocalBackup() {
+        localStorage.setItem(LS_KEY, JSON.stringify(minis));
+        $("#ls").textContent = "Local backup: saved";
+      }
+
+      function loadFromLocalBackup() {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) {
+          alert("No local backup saved.");
+          return;
+        }
+        try {
+          const data = JSON.parse(raw);
+          if (!Array.isArray(data)) throw new Error("Backup is not an array");
+          minis = data.map(normalizeMini);
+          selectedId = minis[0]?.id || null;
+          renderList();
+          loadToForm(findById(selectedId));
+          setDirty(false);
+          summary();
+          $("#ls").textContent = "Local backup: loaded";
+        } catch (e) {
+          alert("Failed to load backup: " + e.message);
+        }
+      }
+
+      function clearLocalBackup() {
+        localStorage.removeItem(LS_KEY);
+        $("#ls").textContent = "Local backup: none";
+      }
+
+      function splitCsv(s) {
+        return s
+          .split(",")
+          .map((x) => x.trim())
+          .filter((x) => x.length > 0);
+      }
+
+      function splitLines(s) {
+        return s
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+      }
+
+      function slug(s) {
+        return String(s)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+      }
+
+      function download(filename, text) {
+        const blob = new Blob([text], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 500);
+      }
+
+      function escapeHtml(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // Wire up UI
+      $("#fileOpen").addEventListener("change", (e) => {
+        const file = e.target.files?.[0];
+        if (file) loadFromFile(file);
+      });
+
+      $("#loadUrlBtn").addEventListener("click", () => {
+        const url = $("#urlInput").value.trim();
+        if (!url) return;
+        loadFromUrl(url);
+      });
+
+      $("#saveLsBtn").addEventListener("click", saveToLocalBackup);
+      $("#loadLsBtn").addEventListener("click", loadFromLocalBackup);
+      $("#clearLsBtn").addEventListener("click", clearLocalBackup);
+
+      $("#listSearch").addEventListener("input", renderList);
+      $("#listSort").addEventListener("change", renderList);
+
+      $("#newBtn").addEventListener("click", newMini);
+      $("#dupBtn").addEventListener("click", duplicateMini);
+      $("#delBtn").addEventListener("click", deleteMini);
+
+      $("#applyBtn").addEventListener("click", applyChanges);
+      $("#idSuggest").addEventListener("click", suggestId);
+      $("#imgSuggest").addEventListener("click", suggestImages);
+
+      $("#exportBtn").addEventListener("click", () => exportJson(false));
+      $("#exportTsBtn").addEventListener("click", () => exportJson(true));
+      $("#validateBtn").addEventListener("click", validateAll);
+
+      // Mark dirty on any form change
+      for (const id of [
+        "id",
+        "name",
+        "type",
+        "size",
+        "role",
+        "manufacturer",
+        "set",
+        "origin_type",
+        "acq_date",
+        "acq_loc",
+        "room",
+        "storage",
+        "paint_status",
+        "painter",
+        "paint_date",
+        "paint_style",
+        "paint_brand",
+        "frequency",
+        "campaigns",
+        "img_main",
+        "img_before",
+        "img_after",
+        "img_ai",
+        "img_ref",
+        "condition",
+        "tags",
+        "notes",
+      ]) {
+        $(`#${id}`).addEventListener("input", () => setDirty(true));
+      }
+
+      // Helpful default
+      $("#urlInput").value = "data/minis.json";
+      summary();
+      setDirty(false);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+[
+  {
+    "id": "mini",
+    "name": "soccer",
+    "type": "human",
+    "size": "Medium",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "",
+      "acquisition_date": "",
+      "acquisition_location": "Guardian Games Corallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Jax SN Johnson",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [
+        "Joffuss Eberon"
+      ],
+      "role": "",
+      "frequency": ""
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/shadow-sorcerer-main.webp",
+        "images/minis/shadow-sorcerer-removed.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [
+        "images/minis/shadow-sorcerer-ai.webp"
+      ],
+      "reference": []
+    },
+    "tags": [],
+    "notes": ""
+  }
+]

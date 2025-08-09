@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>D&D Minis Gallery</title>
+    <meta
+      name="description"
+      content="A filterable gallery of D&D miniatures hosted on GitHub Pages."
+    />
+    <style>
+      :root {
+        --bg: #0f1115;
+        --card: #171a21;
+        --muted: #a9b1bd;
+        --text: #e6eaf0;
+        --accent: #72a1ff;
+        --accent-2: #ffd166;
+        --border: #232737;
+        --ok: #7bd88f;
+        --warn: #ffb86c;
+        --danger: #ff6b6b;
+        --chip: #1f2330;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
+          0 8px 24px rgba(0, 0, 0, 0.12);
+        --radius: 12px;
+        --radius-sm: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 500 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      header {
+        padding: 24px 16px 8px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 0.2px;
+      }
+
+      header .subtitle {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .stats {
+        margin-top: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .stats .pill {
+        background: var(--chip);
+        border: 1px solid var(--border);
+        padding: 6px 10px;
+        border-radius: 999px;
+      }
+
+      .toolbar {
+        max-width: 1100px;
+        margin: 12px auto 0;
+        padding: 8px 16px 0;
+        display: grid;
+        grid-template-columns: 1fr auto auto auto;
+        gap: 8px;
+      }
+
+      .toolbar input[type="search"] {
+        width: 100%;
+        padding: 10px 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        outline: none;
+      }
+
+      .toolbar select {
+        padding: 10px 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        outline: none;
+      }
+
+      .toolbar .btn {
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .toolbar .btn:hover {
+        border-color: var(--accent);
+      }
+
+      .filters {
+        max-width: 1100px;
+        margin: 8px auto 0;
+        padding: 0 16px 8px;
+      }
+
+      .filters .panel {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 12px;
+      }
+
+      .filters .groups {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      @media (max-width: 1024px) {
+        .filters .groups {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .toolbar {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .filters .groups {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .group {
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-sm);
+        padding: 8px 10px;
+      }
+
+      .group h4 {
+        margin: 0 0 6px;
+        font-size: 13px;
+        color: var(--muted);
+        letter-spacing: 0.2px;
+      }
+
+      .group .opts {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        max-height: 180px;
+        overflow: auto;
+        padding-right: 4px;
+      }
+
+      .group label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .group input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+      }
+
+      .active-filters {
+        max-width: 1100px;
+        margin: 8px auto 0;
+        padding: 0 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--chip);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .chip button {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 0 0 0 4px;
+      }
+
+      .grid {
+        max-width: 1100px;
+        margin: 12px auto 40px;
+        padding: 0 16px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      @media (max-width: 1024px) {
+        .grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        min-height: 240px;
+      }
+
+      .thumb {
+        background: #0c0e13;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+      }
+
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .meta {
+        padding: 10px 12px 12px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .meta h3 {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .line {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .badge {
+        font-size: 11px;
+        padding: 4px 6px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: #121520;
+        color: var(--muted);
+      }
+
+      .badge.ok {
+        color: var(--ok);
+        border-color: rgba(123, 216, 143, 0.35);
+        background: rgba(123, 216, 143, 0.08);
+      }
+
+      .badge.warn {
+        color: var(--warn);
+        border-color: rgba(255, 184, 108, 0.35);
+        background: rgba(255, 184, 108, 0.08);
+      }
+
+      .badge.danger {
+        color: var(--danger);
+        border-color: rgba(255, 107, 107, 0.35);
+        background: rgba(255, 107, 107, 0.08);
+      }
+
+      dialog {
+        width: min(920px, 92vw);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 0;
+        background: var(--card);
+        color: var(--text);
+      }
+
+      dialog::backdrop {
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .modal-head {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .modal-head h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .modal-body {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      @media (max-width: 800px) {
+        .modal-body {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 6px 12px;
+        font-size: 14px;
+      }
+
+      .kv div {
+        padding: 4px 0;
+        border-bottom: 1px dashed var(--border);
+      }
+
+      .kv .k {
+        color: var(--muted);
+      }
+
+      .notes {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        background: #121520;
+        color: var(--text);
+        white-space: pre-wrap;
+      }
+
+      /* Carousel Styles */
+      .carousel {
+        position: relative;
+        background: #0c0e13;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+      }
+
+      .carousel-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .carousel-slide {
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .carousel-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        cursor: zoom-in;
+      }
+
+      .carousel-label {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(0, 0, 0, 0.6);
+        color: var(--text);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+
+      .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-size: 24px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .carousel-nav.prev {
+        left: 10px;
+      }
+      .carousel-nav.next {
+        right: 10px;
+      }
+
+      /* Lightbox Styles */
+      .lightbox {
+        display: none;
+        position: fixed; /* Changed to fixed to cover viewport */
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 100; /* Ensure it's above other modal content */
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+      }
+
+      .lightbox.show {
+        display: flex;
+      }
+
+      .lightbox-img {
+        max-width: 95vw;
+        max-height: 95vh;
+        cursor: grab;
+        transition: transform 0.2s ease;
+        will-change: transform;
+      }
+
+      .lightbox-img.grabbing {
+        cursor: grabbing;
+      }
+
+      .lightbox-btn {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--border);
+        color: white;
+        font-size: 2rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lightbox-close {
+        top: 15px;
+        right: 15px;
+      }
+      .lightbox-prev {
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+      }
+      .lightbox-next {
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+      }
+
+      footer {
+        max-width: 1100px;
+        margin: 16px auto 48px;
+        padding: 0 16px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>D&D Minis Gallery</h1>
+      <div class="subtitle">
+        Browse, search, and filter your miniature collection.
+      </div>
+      <div class="stats" id="stats">
+        <div class="pill">Total: —</div>
+        <div class="pill">Painted: —</div>
+        <div class="pill">Filtered: —</div>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search name, tags, notes, set, manufacturer…"
+        aria-label="Search minis"
+      />
+      <select id="sortBy" aria-label="Sort by">
+        <option value="name-asc">Name A → Z</option>
+        <option value="name-desc">Name Z → A</option>
+        <option value="acq-new">Acquired (Newest)</option>
+        <option value="acq-old">Acquired (Oldest)</option>
+        <option value="paint-new">Painted Date (Newest)</option>
+        <option value="paint-old">Painted Date (Oldest)</option>
+      </select>
+      <button class="btn" id="randomBtn" aria-label="Random mini">
+        Random
+      </button>
+      <button class="btn" id="resetBtn" aria-label="Reset filters">
+        Reset
+      </button>
+    </section>
+
+    <section class="filters">
+      <div class="panel">
+        <div class="groups" id="filterGroups"></div>
+      </div>
+    </section>
+
+    <section class="active-filters" id="activeFilters"></section>
+
+    <main class="grid" id="grid" aria-live="polite"></main>
+
+    <dialog id="detailDialog" aria-label="Mini details">
+      <div class="modal-head">
+        <h3 id="detailTitle">Mini details</h3>
+        <button
+          class="btn"
+          id="closeDialogBtn"
+          aria-label="Close details dialog"
+        >
+          Close
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="carousel">
+          <div class="carousel-track" id="carouselTrack"></div>
+          <button class="carousel-nav prev" id="carouselPrev">‹</button>
+          <button class="carousel-nav next" id="carouselNext">›</button>
+        </div>
+        <div>
+          <div class="kv" id="detailKv"></div>
+          <div class="notes" id="detailNotes"></div>
+        </div>
+      </div>
+
+      <!-- Lightbox moved INSIDE the dialog -->
+      <div id="lightbox" class="lightbox">
+        <button class="lightbox-btn lightbox-close">✕</button>
+        <button class="lightbox-btn lightbox-prev">‹</button>
+        <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed mini" />
+        <button class="lightbox-btn lightbox-next">›</button>
+      </div>
+    </dialog>
+
+    <footer>
+      Thank you for visting this site!!!!
+    </footer>
+
+    <script>
+      const DATA_URL = "data/minis.json";
+      const STORAGE_KEY = "miniGalleryStateV1";
+
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+
+      const state = {
+        query: "",
+        sortBy: "name-asc",
+        filters: {
+          type: new Set(),
+          size: new Set(),
+          paint: new Set(),
+          manufacturer: new Set(),
+          painter: new Set(),
+          room: new Set(),
+          storage: new Set(),
+          role: new Set(),
+        },
+      };
+
+      let allMinis = [];
+      let uniqueOptions = {
+        type: [],
+        size: [],
+        paint: [],
+        manufacturer: [],
+        painter: [],
+        room: [],
+        storage: [],
+        role: [],
+      };
+
+      const el = (sel) => document.querySelector(sel);
+      const els = (sel) => [...document.querySelectorAll(sel)];
+
+      const PLACEHOLDER_SVG = (() => {
+        const svg =
+          "<svg xmlns='http://www.w3.org/2000/svg' width='480' " +
+          "height='360' viewBox='0 0 480 360'>" +
+          "<defs><linearGradient id='g' x1='0' x2='1'>" +
+          "<stop offset='0' stop-color='#121520'/>" +
+          "<stop offset='1' stop-color='#0b0d13'/></linearGradient></defs>" +
+          "<rect width='100%' height='100%' fill='url(#g)'/>" +
+          "<g fill='none' stroke='#2a3146' stroke-width='2'>" +
+          "<rect x='24' y='24' width='432' height='312' " +
+          "rx='16' ry='16'/>" +
+          "<path d='M80 260l70-90 60 70 50-60 70 80'/>" +
+          "<circle cx='140' cy='110' r='22'/></g>" +
+          "<text x='50%' y='50%' dominant-baseline='middle' " +
+          "text-anchor='middle' fill='#5a6786' font-family='system-ui' " +
+          "font-size='20'>No image</text></svg>";
+        return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+      })();
+
+      async function init() {
+        await loadData();
+        buildUniqueOptions();
+        restoreState();
+        buildFilterGroups();
+        wireControls();
+        applyAndRender();
+      }
+
+      async function loadData() {
+        try {
+          const res = await fetch(DATA_URL, { cache: "no-store" });
+          if (!res.ok) throw new Error("Failed to load minis.json");
+          const data = await res.json();
+          allMinis = data.map((m) => normalizeMini(m));
+        } catch (err) {
+          console.error(err);
+          allMinis = [];
+        }
+      }
+
+      function normalizeMini(m) {
+        const safe = (v, d = "") => (v == null ? d : v);
+        const toArray = (v) => {
+          if (Array.isArray(v)) return v;
+          if (typeof v === "string" && v) return [v];
+          return [];
+        };
+
+        return {
+          id: safe(m.id),
+          name: safe(m.name),
+          type: safe(m.type),
+          size: safe(m.size),
+          source: {
+            manufacturer: safe(m?.source?.manufacturer),
+            set: safe(m?.source?.set),
+            acquisition_date: safe(m?.source?.acquisition_date),
+            acquisition_location: safe(m?.source?.acquisition_location),
+            origin_type: safe(m?.source?.origin_type),
+          },
+          location: {
+            room: safe(m?.location?.room),
+            storage: safe(m?.location?.storage),
+          },
+          paint: {
+            status: safe(m?.paint?.status),
+            painter: safe(m?.paint?.painter),
+            date: safe(m?.paint?.date),
+            style: safe(m?.paint?.style),
+            brand: toArray(m?.paint?.brand),
+          },
+          usage: {
+            campaigns: toArray(m?.usage?.campaigns),
+            role: safe(m?.usage?.role),
+            frequency: safe(m?.usage?.frequency),
+          },
+          condition: safe(m?.condition),
+          images: {
+            main: toArray(m?.images?.main),
+            before_paint: toArray(m?.images?.before_paint),
+            after_paint: toArray(m?.images?.after_paint),
+            ai_art: toArray(m?.images?.ai_art),
+            reference: toArray(m?.images?.reference),
+          },
+          tags: toArray(m?.tags),
+          notes: safe(m?.notes),
+        };
+      }
+
+      function buildUniqueOptions() {
+        const getUniques = (fn) => {
+          const s = new Set();
+          for (const m of allMinis) {
+            const v = fn(m);
+            if (!v) continue;
+            s.add(v);
+          }
+          return [...s].sort(collator.compare);
+        };
+        uniqueOptions.type = getUniques((m) => m.type);
+        uniqueOptions.size = getUniques((m) => m.size);
+        uniqueOptions.paint = getUniques((m) => m.paint.status);
+        uniqueOptions.manufacturer = getUniques(
+          (m) => m.source.manufacturer
+        );
+        uniqueOptions.painter = getUniques((m) => m.paint.painter);
+        uniqueOptions.room = getUniques((m) => m.location.room);
+        uniqueOptions.storage = getUniques((m) => m.location.storage);
+        uniqueOptions.role = getUniques((m) => m.usage.role);
+      }
+
+      function buildFilterGroups() {
+        const cont = el("#filterGroups");
+        cont.innerHTML = "";
+        const groups = [
+          ["Type", "type"],
+          ["Size", "size"],
+          ["Paint Status", "paint"],
+          ["Manufacturer", "manufacturer"],
+          ["Painter", "painter"],
+          ["Role", "role"],
+          ["Room", "room"],
+          ["Storage", "storage"],
+        ];
+        for (const [label, key] of groups) {
+          cont.appendChild(renderGroup(label, key, uniqueOptions[key]));
+        }
+      }
+
+      function renderGroup(label, key, values) {
+        const g = document.createElement("div");
+        g.className = "group";
+        const h = document.createElement("h4");
+        h.textContent = label;
+        g.appendChild(h);
+        const opts = document.createElement("div");
+        opts.className = "opts";
+        for (const v of values) {
+          const id = `f_${key}_${slug(v)}`;
+          const lab = document.createElement("label");
+          lab.setAttribute("for", id);
+          const cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.id = id;
+          cb.value = v;
+          cb.checked = state.filters[key]?.has(v);
+          cb.addEventListener("change", () => {
+            toggleFilter(key, v, cb.checked);
+          });
+          const span = document.createElement("span");
+          span.textContent = v;
+          lab.appendChild(cb);
+          lab.appendChild(span);
+          opts.appendChild(lab);
+        }
+        g.appendChild(opts);
+        return g;
+      }
+
+      function toggleFilter(key, value, checked) {
+        const set = state.filters[key] || new Set();
+        if (checked) set.add(value);
+        else set.delete(value);
+        state.filters[key] = set;
+        persistState();
+        applyAndRender();
+      }
+
+      function wireControls() {
+        el("#search").addEventListener("input", (e) => {
+          state.query = e.target.value.trim();
+          persistState();
+          applyAndRender();
+        });
+        el("#sortBy").addEventListener("change", (e) => {
+          state.sortBy = e.target.value;
+          persistState();
+          applyAndRender();
+        });
+        el("#resetBtn").addEventListener("click", () => {
+          resetState();
+          buildFilterGroups();
+          applyAndRender();
+        });
+        el("#randomBtn").addEventListener("click", () => {
+          randomSelect();
+        });
+        el("#closeDialogBtn").addEventListener("click", () => {
+          el("#detailDialog").close();
+        });
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            // Close lightbox first if it's open, otherwise close dialog
+            if (el("#lightbox").classList.contains("show")) {
+              closeLightbox();
+            } else {
+              el("#detailDialog")?.close();
+            }
+          }
+        });
+      }
+
+      function resetState() {
+        state.query = "";
+        state.sortBy = "name-asc";
+        for (const k of Object.keys(state.filters)) {
+          state.filters[k] = new Set();
+        }
+        persistState();
+        el("#search").value = "";
+        el("#sortBy").value = state.sortBy;
+      }
+
+      function restoreState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const saved = JSON.parse(raw);
+          state.query = saved.query || "";
+          state.sortBy = saved.sortBy || "name-asc";
+          for (const k of Object.keys(state.filters)) {
+            const arr = saved.filters?.[k] || [];
+            state.filters[k] = new Set(arr);
+          }
+          el("#search").value = state.query;
+          el("#sortBy").value = state.sortBy;
+        } catch {
+          /* ignore */
+        }
+      }
+
+      function persistState() {
+        const toSave = {
+          query: state.query,
+          sortBy: state.sortBy,
+          filters: Object.fromEntries(
+            Object.entries(state.filters).map(([k, s]) => [k, [...s]])
+          ),
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      }
+
+      function applyAndRender() {
+        const filtered = filterMinis(allMinis);
+        const sorted = sortMinis(filtered, state.sortBy);
+        renderActiveChips();
+        renderGrid(sorted);
+        renderStats(allMinis, filtered);
+      }
+
+      function filterMinis(minis) {
+        const q = state.query.toLowerCase();
+        const f = state.filters;
+
+        const has = (set, v) => (set.size === 0 ? true : set.has(v));
+
+        return minis.filter((m) => {
+          const text =
+            [
+              m.name,
+              m.type,
+              m.size,
+              m.source.manufacturer,
+              m.source.set,
+              m.source.origin_type,
+              m.location.room,
+              m.location.storage,
+              m.paint.status,
+              m.paint.painter,
+              m.notes,
+              ...(m.tags || []),
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase() || "";
+
+          const matchesQuery = q ? text.includes(q) : true;
+
+          const matchesFilters =
+            has(f.type, m.type) &&
+            has(f.size, m.size) &&
+            has(f.paint, m.paint.status) &&
+            has(f.manufacturer, m.source.manufacturer) &&
+            has(f.painter, m.paint.painter) &&
+            has(f.room, m.location.room) &&
+            has(f.storage, m.location.storage) &&
+            has(f.role, m.usage.role);
+
+          return matchesQuery && matchesFilters;
+        });
+      }
+
+      function sortMinis(minis, by) {
+        const toTime = (s) => (s ? Date.parse(s) || 0 : 0);
+        const get = {
+          "name-asc": (a, b) => collator.compare(a.name, b.name),
+          "name-desc": (a, b) => collator.compare(b.name, a.name),
+          "acq-new": (a, b) =>
+            toTime(b.source.acquisition_date) -
+            toTime(a.source.acquisition_date),
+          "acq-old": (a, b) =>
+            toTime(a.source.acquisition_date) -
+            toTime(b.source.acquisition_date),
+          "paint-new": (a, b) => toTime(b.paint.date) - toTime(a.paint.date),
+          "paint-old": (a, b) => toTime(a.paint.date) - toTime(b.paint.date),
+        }[by];
+        return [...minis].sort(get || get["name-asc"]);
+      }
+
+      function renderActiveChips() {
+        const wrap = el("#activeFilters");
+        wrap.innerHTML = "";
+        const chips = [];
+
+        if (state.query) {
+          chips.push({
+            label: `Search: "${state.query}"`,
+            onRemove: () => {
+              state.query = "";
+              el("#search").value = "";
+            },
+          });
+        }
+
+        for (const [key, set] of Object.entries(state.filters)) {
+          for (const v of set) {
+            chips.push({
+              label: `${prettyKey(key)}: ${v}`,
+              onRemove: () => {
+                set.delete(v);
+                const id = `#f_${key}_${slug(v)}`;
+                const box = el(id);
+                if (box) box.checked = false;
+              },
+            });
+          }
+        }
+
+        for (const c of chips) {
+          const chip = document.createElement("span");
+          chip.className = "chip";
+          chip.textContent = c.label;
+          const x = document.createElement("button");
+          x.setAttribute("aria-label", `Remove ${c.label}`);
+          x.textContent = "✕";
+          x.addEventListener("click", () => {
+            c.onRemove();
+            persistState();
+            applyAndRender();
+          });
+          chip.appendChild(x);
+          wrap.appendChild(chip);
+        }
+      }
+
+      function renderGrid(minis) {
+        const g = el("#grid");
+        g.innerHTML = "";
+        for (const m of minis) {
+          const card = document.createElement("article");
+          card.className = "card";
+          card.tabIndex = 0;
+          card.addEventListener("click", () => openDetail(m));
+          card.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") openDetail(m);
+          });
+
+          const thumb = document.createElement("div");
+          thumb.className = "thumb";
+          const img = document.createElement("img");
+          img.loading = "lazy";
+          img.alt = m.name || "Miniature";
+          const firstImage =
+            m.images.main[0] ||
+            m.images.after_paint[0] ||
+            m.images.ai_art[0] ||
+            PLACEHOLDER_SVG;
+          img.src = firstImage;
+          img.onerror = () => {
+            img.onerror = null;
+            img.src = PLACEHOLDER_SVG;
+          };
+          thumb.appendChild(img);
+
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          const h3 = document.createElement("h3");
+          h3.textContent = m.name || m.id || "Unnamed Mini";
+          const l1 = document.createElement("div");
+          l1.className = "line";
+          l1.textContent = [m.type, m.size, m.usage.role]
+            .filter(Boolean)
+            .join(" • ");
+          const l2 = document.createElement("div");
+          l2.className = "line";
+          const painter = m.paint.painter || "—";
+          l2.textContent = [
+            m.source.manufacturer,
+            `Painter: ${painter}`,
+            m.location.room || m.location.storage,
+          ]
+            .filter(Boolean)
+            .join(" • ");
+
+          const badges = document.createElement("div");
+          badges.className = "badges";
+          const b = document.createElement("span");
+          b.className = "badge " + badgeClassForPaint(m.paint.status);
+          b.textContent = m.paint.status || "Unspecified";
+          badges.appendChild(b);
+
+          meta.appendChild(h3);
+          meta.appendChild(l1);
+          meta.appendChild(l2);
+          meta.appendChild(badges);
+
+          card.appendChild(thumb);
+          card.appendChild(meta);
+          g.appendChild(card);
+        }
+      }
+
+      function badgeClassForPaint(status) {
+        const s = (status || "").toLowerCase();
+        if (s === "painted") return "ok";
+        if (s === "primed" || s === "needs touch-up") return "warn";
+        return "danger";
+      }
+
+      function renderStats(all, filtered) {
+        const total = all.length;
+        const painted = all.filter(
+          (m) => (m.paint.status || "").toLowerCase() === "painted"
+        ).length;
+        const pct = total ? Math.round((painted / total) * 100) : 0;
+        const fCount = filtered.length;
+        el("#stats").innerHTML = `
+          <div class="pill">Total: ${total}</div>
+          <div class="pill">Painted: ${painted} (${pct}%)</div>
+          <div class="pill">Filtered: ${fCount}</div>
+        `;
+      }
+
+      // --- Carousel and Lightbox State ---
+      let carouselIndex = 0;
+      let carouselImages = [];
+      let lightboxIndex = 0;
+      let lightboxImages = [];
+      let isDragging = false;
+      let startX, startY, translateX, translateY;
+
+      function openDetail(m) {
+        el("#detailTitle").textContent = m.name || m.id || "Mini details";
+
+        // Setup Carousel
+        setupCarousel(m);
+
+        // Setup Key-Value data
+        const kv = el("#detailKv");
+        kv.innerHTML = "";
+        const rows = [
+          ["ID", m.id],
+          ["Type", m.type],
+          ["Size", m.size],
+          ["Role", m.usage.role],
+          ["Manufacturer", m.source.manufacturer],
+          ["Set", m.source.set],
+          ["Origin", m.source.origin_type],
+          ["Acquired", m.source.acquisition_date],
+          ["Acq. Location", m.source.acquisition_location],
+          ["Room", m.location.room],
+          ["Storage", m.location.storage],
+          ["Paint Status", m.paint.status],
+          ["Painter", m.paint.painter],
+          ["Paint Date", m.paint.date],
+          ["Style", m.paint.style],
+          ["Brands", (m.paint.brand || []).join(", ")],
+          ["Condition", m.condition],
+          ["Campaigns", (m.usage.campaigns || []).join(", ")],
+          ["Tags", (m.tags || []).join(", ")],
+        ];
+        for (const [k, v] of rows) {
+          const kd = document.createElement("div");
+          kd.className = "k";
+          kd.textContent = k;
+          const vd = document.createElement("div");
+          vd.textContent = v || "—";
+          kv.appendChild(kd);
+          kv.appendChild(vd);
+        }
+
+        el("#detailNotes").textContent = m.notes || "";
+
+        const dlg = el("#detailDialog");
+        dlg.showModal();
+      }
+
+      function setupCarousel(m) {
+        const track = el("#carouselTrack");
+        track.innerHTML = "";
+        carouselIndex = 0;
+        carouselImages = [];
+
+        const addImages = (arr, label) => {
+          arr.forEach((src) => carouselImages.push({ src, label }));
+        };
+
+        addImages(m.images.main, "Main");
+        addImages(m.images.after_paint, "After Paint");
+        addImages(m.images.ai_art, "AI Art");
+        addImages(m.images.reference, "Reference");
+        addImages(m.images.before_paint, "Before Paint");
+
+        if (carouselImages.length === 0) {
+          carouselImages.push({ src: PLACEHOLDER_SVG, label: "No Image" });
+        }
+
+        carouselImages.forEach((imgData, index) => {
+          const slide = document.createElement("div");
+          slide.className = "carousel-slide";
+          const img = document.createElement("img");
+          img.loading = "lazy";
+          img.src = imgData.src;
+          img.alt = `${m.name} - ${imgData.label}`;
+          img.onerror = () => (img.src = PLACEHOLDER_SVG);
+          img.addEventListener("click", () => openLightbox(index));
+          slide.appendChild(img);
+
+          const label = document.createElement("div");
+          label.className = "carousel-label";
+          label.textContent = imgData.label;
+          slide.appendChild(label);
+
+          track.appendChild(slide);
+        });
+
+        updateCarousel();
+      }
+
+      function updateCarousel() {
+        const track = el("#carouselTrack");
+        track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+        const hasMultiple = carouselImages.length > 1;
+        el("#carouselPrev").style.display = hasMultiple ? "flex" : "none";
+        el("#carouselNext").style.display = hasMultiple ? "flex" : "none";
+      }
+
+      el("#carouselPrev").addEventListener("click", () => {
+        carouselIndex =
+          (carouselIndex - 1 + carouselImages.length) % carouselImages.length;
+        updateCarousel();
+      });
+
+      el("#carouselNext").addEventListener("click", () => {
+        carouselIndex = (carouselIndex + 1) % carouselImages.length;
+        updateCarousel();
+      });
+
+      // --- Lightbox Functions ---
+      function openLightbox(index) {
+        // The lightbox is now inside the dialog, so we don't need to close it.
+        lightboxImages = carouselImages;
+        lightboxIndex = index;
+        updateLightboxImage();
+        el("#lightbox").classList.add("show");
+        window.addEventListener("keydown", handleLightboxKeys);
+      }
+
+      function closeLightbox() {
+        const lb = el("#lightbox");
+        if (!lb.classList.contains("show")) return;
+        lb.classList.remove("show");
+        resetLightboxImage();
+        window.removeEventListener("keydown", handleLightboxKeys);
+      }
+
+      function updateLightboxImage() {
+        resetLightboxImage();
+        el("#lightboxImg").src = lightboxImages[lightboxIndex].src;
+        const hasMultiple = lightboxImages.length > 1;
+        el(".lightbox-prev").style.display = hasMultiple ? "flex" : "none";
+        el(".lightbox-next").style.display = hasMultiple ? "flex" : "none";
+      }
+
+      function resetLightboxImage() {
+        const img = el("#lightboxImg");
+        img.style.transform = "scale(1) translate(0, 0)";
+      }
+
+      function handleLightboxKeys(e) {
+        if (e.key === "ArrowRight") el(".lightbox-next").click();
+        if (e.key === "ArrowLeft") el(".lightbox-prev").click();
+      }
+
+      el(".lightbox-close").addEventListener("click", closeLightbox);
+      el(".lightbox-prev").addEventListener("click", () => {
+        lightboxIndex =
+          (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
+        updateLightboxImage();
+      });
+      el(".lightbox-next").addEventListener("click", () => {
+        lightboxIndex = (lightboxIndex + 1) % lightboxImages.length;
+        updateLightboxImage();
+      });
+
+      // Zoom and Pan Logic
+      const lightboxImg = el("#lightboxImg");
+      lightboxImg.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const rect = lightboxImg.getBoundingClientRect();
+        const scaleMatch = lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
+        let scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+        const delta = e.deltaY < 0 ? 0.2 : -0.2;
+        const newScale = Math.max(1, Math.min(scale + delta, 5));
+        lightboxImg.style.transform = `scale(${newScale})`;
+      });
+
+      lightboxImg.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return; // Only left-click
+        const scaleMatch = lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
+        if (!scaleMatch || parseFloat(scaleMatch[1]) <= 1) return;
+        e.preventDefault();
+        isDragging = true;
+        lightboxImg.classList.add("grabbing");
+        const transform = new DOMMatrix(getComputedStyle(lightboxImg).transform);
+        startX = e.clientX - transform.e;
+        startY = e.clientY - transform.f;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        const scaleMatch = lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
+        const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
+        lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      });
+
+      window.addEventListener("mouseup", () => {
+        isDragging = false;
+        lightboxImg.classList.remove("grabbing");
+      });
+
+      lightboxImg.addEventListener("dblclick", resetLightboxImage);
+
+      function randomSelect() {
+        const filtered = filterMinis(allMinis);
+        if (filtered.length === 0) return;
+        const idx = Math.floor(Math.random() * filtered.length);
+        openDetail(filtered[idx]);
+      }
+
+      function prettyKey(k) {
+        return {
+          type: "Type",
+          size: "Size",
+          paint: "Paint",
+          manufacturer: "Manufacturer",
+          painter: "Painter",
+          room: "Room",
+          storage: "Storage",
+          role: "Role",
+        }[k];
+      }
+
+      function slug(s) {
+        return String(s)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+      }
+
+      init();
+    </script>
+  </body>
+</html>
