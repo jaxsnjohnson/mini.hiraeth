@@ -1,8 +1,8 @@
 [
   {
-    "id": "mini",
-    "name": "soccer",
-    "type": "human",
+    "id": "07608dd7-1b7b-4ea5-ae29-a237fda8a4d7",
+    "name": "Antinua Thiel",
+    "type": "Human",
     "size": "Medium",
     "source": {
       "manufacturer": "Wizkids",
@@ -12,13 +12,13 @@
       "origin_type": "Retail Purchase"
     },
     "location": {
-      "room": "",
-      "storage": ""
+      "room": "Jax's Folks",
+      "storage": "Antinua Dice Book"
     },
     "paint": {
       "status": "Painted",
       "painter": "Jax SN Johnson",
-      "date": "",
+      "date": "2025-02-11",
       "style": "",
       "brand": []
     },
@@ -26,14 +26,15 @@
       "campaigns": [
         "Joffuss Eberon"
       ],
-      "role": "",
-      "frequency": ""
+      "role": "Player Character",
+      "frequency": "Often"
     },
     "condition": "",
     "images": {
       "main": [
         "images/minis/shadow-sorcerer-main.webp",
-        "images/minis/shadow-sorcerer-removed.webp"
+        "images/minis/shadow-sorcerer-removed.webp",
+        "images/minis/shadow-sorcerer-first.webp"
       ],
       "before_paint": [],
       "after_paint": [],
@@ -43,6 +44,6 @@
       "reference": []
     },
     "tags": [],
-    "notes": ""
+    "notes": "Antinua Thiel is the undisputed star of her own dark melodrama."
   }
 ]
