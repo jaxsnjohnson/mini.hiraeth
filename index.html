@@ -6,11 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <title>D&D Minis Gallery</title>
+    <title>D&D Miniature Collection</title>
     <meta
       name="description"
       content="A filterable gallery of D&D miniatures hosted on GitHub Pages."
     />
+    <!-- The Lucide script is no longer needed and has been removed. -->
     <style>
       :root {
         --bg: #0f1115;
@@ -19,15 +20,32 @@
         --text: #e6eaf0;
         --accent: #72a1ff;
         --accent-2: #ffd166;
-        --border: #232737;
+        --border: #2a3146;
         --ok: #7bd88f;
         --warn: #ffb86c;
         --danger: #ff6b6b;
         --chip: #1f2330;
         --shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
           0 8px 24px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.2),
+          0 10px 30px rgba(0, 0, 0, 0.15);
         --radius: 12px;
         --radius-sm: 8px;
+        --radius-lg: 16px;
+        --font-body: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
       }
 
       * {
@@ -40,20 +58,43 @@
         padding: 0;
         background: var(--bg);
         color: var(--text);
-        font: 500 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
-          Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji",
-          "Segoe UI Emoji";
+        font: 500 16px/1.5 var(--font-body);
       }
 
-      a {
-        color: var(--accent);
-        text-decoration: none;
+      .icon {
+        width: 1em;
+        height: 1em;
+        stroke-width: 2.5;
+        stroke: currentColor;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--accent);
+        width: 0%;
+        z-index: 1000;
+        transition: width 0.4s ease;
       }
 
       header {
         padding: 24px 16px 8px;
         max-width: 1100px;
         margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .emblem {
+        color: var(--accent);
+        flex-shrink: 0;
       }
 
       header h1 {
@@ -68,29 +109,19 @@
         font-size: 14px;
       }
 
-      .stats {
-        margin-top: 12px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        font-size: 14px;
-        color: var(--muted);
-      }
-
-      .stats .pill {
-        background: var(--chip);
-        border: 1px solid var(--border);
-        padding: 6px 10px;
-        border-radius: 999px;
-      }
-
       .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(15, 17, 21, 0.8);
+        backdrop-filter: blur(8px);
         max-width: 1100px;
-        margin: 12px auto 0;
-        padding: 8px 16px 0;
+        margin: 0 auto;
+        padding: 12px 16px;
         display: grid;
-        grid-template-columns: 1fr auto auto auto;
+        grid-template-columns: 1fr auto auto auto auto;
         gap: 8px;
+        border-bottom: 1px solid var(--border);
       }
 
       .toolbar input[type="search"] {
@@ -119,10 +150,39 @@
         background: var(--card);
         color: var(--text);
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: border-color 0.2s;
       }
 
-      .toolbar .btn:hover {
+      .toolbar .btn:hover,
+      .toolbar .btn.active {
         border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .quick-filters {
+        max-width: 1100px;
+        margin: 12px auto 0;
+        padding: 0 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .quick-filters .chip {
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .quick-filters .chip:hover {
+        border-color: var(--accent-2);
+        color: var(--accent-2);
+      }
+      .quick-filters .chip.active {
+        border-color: var(--accent-2);
+        background: rgba(255, 209, 102, 0.1);
+        color: var(--accent-2);
       }
 
       .filters {
@@ -145,49 +205,56 @@
         gap: 12px;
       }
 
-      @media (max-width: 1024px) {
-        .filters .groups {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 640px) {
-        .toolbar {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
-        .filters .groups {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
       .group {
         border: 1px dashed var(--border);
         border-radius: var(--radius-sm);
-        padding: 8px 10px;
+        padding: 0;
       }
 
-      .group h4 {
-        margin: 0 0 6px;
+      .group summary {
+        padding: 8px 10px;
         font-size: 13px;
         color: var(--muted);
         letter-spacing: 0.2px;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .group summary::-webkit-details-marker {
+        display: none;
+      }
+      .group summary .chevron {
+        transition: transform 0.2s;
+      }
+      .group[open] summary .chevron {
+        transform: rotate(90deg);
       }
 
       .group .opts {
+        padding: 0 10px 8px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         max-height: 180px;
         overflow: auto;
-        padding-right: 4px;
       }
 
       .group label {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: 8px;
         font-size: 14px;
         cursor: pointer;
+      }
+      .group label .count {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--bg);
+        padding: 0 6px;
+        border-radius: 4px;
       }
 
       .group input[type="checkbox"] {
@@ -221,7 +288,9 @@
         border: none;
         color: var(--muted);
         cursor: pointer;
-        padding: 0 0 0 4px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
       }
 
       .grid {
@@ -233,19 +302,31 @@
         gap: 12px;
       }
 
-      @media (max-width: 1024px) {
-        .grid {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
+      .grid.list-view {
+        grid-template-columns: 1fr;
+        gap: 8px;
       }
-
-      @media (max-width: 640px) {
-        .grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+      .grid.list-view .card {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        padding-right: 12px;
+      }
+      .grid.list-view .thumb {
+        flex-shrink: 0;
+        width: 100px;
+        height: 75px;
+        aspect-ratio: auto;
+      }
+      .grid.list-view .meta {
+        flex-grow: 1;
+      }
+      .grid.list-view .ribbon {
+        display: none;
       }
 
       .card {
+        position: relative;
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: var(--radius);
@@ -254,6 +335,53 @@
         display: flex;
         flex-direction: column;
         min-height: 240px;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        cursor: pointer;
+      }
+
+      .card:hover,
+      .card:focus-within {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent);
+      }
+
+      .ribbon {
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        width: 120px;
+        height: 120px;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .ribbon span {
+        position: absolute;
+        display: block;
+        width: 180px;
+        padding: 4px 0;
+        color: #fff;
+        text-align: center;
+        font-size: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transform: rotate(45deg) translateY(-20px);
+        right: -30px;
+        top: 32px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        white-space: nowrap;
+      }
+      .ribbon.ok span {
+        background: var(--ok);
+      }
+      .ribbon.warn span {
+        background: var(--warn);
+      }
+      .ribbon.danger span {
+        background: var(--danger);
       }
 
       .thumb {
@@ -285,50 +413,80 @@
         color: var(--muted);
       }
 
-      .badges {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 48px 24px;
+        background: var(--card);
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-lg);
+        margin-top: 24px;
       }
-
-      .badge {
-        font-size: 11px;
-        padding: 4px 6px;
-        border-radius: 6px;
-        border: 1px solid var(--border);
-        background: #121520;
+      .empty-state .icon {
+        font-size: 48px;
+        color: var(--accent);
+        margin-bottom: 16px;
+      }
+      .empty-state h3 {
+        margin: 0 0 8px;
+      }
+      .empty-state p {
+        margin: 0 0 16px;
         color: var(--muted);
       }
-
-      .badge.ok {
-        color: var(--ok);
-        border-color: rgba(123, 216, 143, 0.35);
-        background: rgba(123, 216, 143, 0.08);
+      .empty-state .btn {
       }
 
-      .badge.warn {
-        color: var(--warn);
-        border-color: rgba(255, 184, 108, 0.35);
-        background: rgba(255, 184, 108, 0.08);
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
       }
-
-      .badge.danger {
-        color: var(--danger);
-        border-color: rgba(255, 107, 107, 0.35);
-        background: rgba(255, 107, 107, 0.08);
+      .skeleton {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--chip);
+      }
+      .skeleton::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0,
+          rgba(255, 255, 255, 0.05) 20%,
+          rgba(255, 255, 255, 0.1) 60%,
+          rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+      }
+      .skeleton-img {
+        width: 100%;
+        aspect-ratio: 4/3;
+      }
+      .skeleton-text {
+        height: 1em;
+        border-radius: 4px;
+        margin-bottom: 0.5em;
       }
 
       dialog {
         width: min(920px, 92vw);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: var(--radius-lg);
         padding: 0;
         background: var(--card);
         color: var(--text);
+        box-shadow: var(--shadow-lg);
       }
 
       dialog::backdrop {
         background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
       }
 
       .modal-head {
@@ -337,38 +495,71 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 12px;
       }
 
       .modal-head h3 {
         margin: 0;
         font-size: 18px;
+        flex-grow: 1;
+      }
+
+      .modal-head .btn {
+        flex-shrink: 0;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        color: white;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 1px solid var(--border);
+        transition: all 0.2s ease;
+      }
+
+      .modal-head .btn:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+
+      .modal-head .btn .icon {
+        width: 18px;
+        height: 18px;
       }
 
       .modal-body {
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 12px;
-        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: 16px;
       }
 
-      @media (max-width: 800px) {
-        .modal-body {
-          grid-template-columns: 1fr;
-        }
+      .kv-group {
+        margin-bottom: 16px;
       }
-
+      .kv-group h4 {
+        margin: 0 0 8px;
+        font-size: 13px;
+        color: var(--muted);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
       .kv {
         display: grid;
         grid-template-columns: 130px 1fr;
         gap: 6px 12px;
         font-size: 14px;
       }
-
       .kv div {
         padding: 4px 0;
         border-bottom: 1px dashed var(--border);
       }
-
       .kv .k {
         color: var(--muted);
       }
@@ -383,7 +574,14 @@
         white-space: pre-wrap;
       }
 
-      /* Carousel Styles */
+      .carousel-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-width: 600px;
+        width: 100%;
+        margin: 0 auto;
+      }
       .carousel {
         position: relative;
         background: #0c0e13;
@@ -392,13 +590,11 @@
         overflow: hidden;
         aspect-ratio: 4 / 3;
       }
-
       .carousel-track {
         display: flex;
         height: 100%;
         transition: transform 0.3s ease-in-out;
       }
-
       .carousel-slide {
         flex: 0 0 100%;
         width: 100%;
@@ -408,14 +604,12 @@
         align-items: center;
         justify-content: center;
       }
-
       .carousel-slide img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         cursor: zoom-in;
       }
-
       .carousel-label {
         position: absolute;
         top: 8px;
@@ -426,7 +620,6 @@
         border-radius: 6px;
         font-size: 12px;
       }
-
       .carousel-nav {
         position: absolute;
         top: 50%;
@@ -443,30 +636,50 @@
         align-items: center;
         justify-content: center;
       }
-
       .carousel-nav.prev {
         left: 10px;
       }
       .carousel-nav.next {
         right: 10px;
       }
+      .carousel-filmstrip {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .filmstrip-thumb {
+        flex: 0 0 80px;
+        width: 80px;
+        height: 60px;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.2s;
+      }
+      .filmstrip-thumb.active {
+        border-color: var(--accent);
+      }
+      .filmstrip-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-      /* Lightbox Styles */
       .lightbox {
         display: none;
-        position: fixed; /* Changed to fixed to cover viewport */
+        position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.9);
-        z-index: 100; /* Ensure it's above other modal content */
+        z-index: 99999;
         align-items: center;
         justify-content: center;
         user-select: none;
       }
-
       .lightbox.show {
         display: flex;
       }
-
       .lightbox-img {
         max-width: 95vw;
         max-height: 95vh;
@@ -474,11 +687,9 @@
         transition: transform 0.2s ease;
         will-change: transform;
       }
-
       .lightbox-img.grabbing {
         cursor: grabbing;
       }
-
       .lightbox-btn {
         position: absolute;
         background: rgba(0, 0, 0, 0.6);
@@ -493,7 +704,6 @@
         align-items: center;
         justify-content: center;
       }
-
       .lightbox-close {
         top: 15px;
         right: 15px;
@@ -519,15 +729,17 @@
     </style>
   </head>
   <body>
+    <div class="progress-bar" id="progressBar"></div>
+
     <header>
-      <h1>D&D Minis Gallery</h1>
-      <div class="subtitle">
-        Browse, search, and filter your miniature collection.
+      <div class="emblem">
+        <img src="images/logo.png" alt="Site Logo" width="40" height="40">
       </div>
-      <div class="stats" id="stats">
-        <div class="pill">Total: —</div>
-        <div class="pill">Painted: —</div>
-        <div class="pill">Filtered: —</div>
+      <div>
+        <h1>H.A.G. Miniature Collection</h1>
+        <div class="subtitle">
+          Browse, search, and filter Hiraeth Archives & Guides' miniature collection.
+        </div>
       </div>
     </header>
 
@@ -547,12 +759,21 @@
         <option value="paint-old">Painted Date (Oldest)</option>
       </select>
       <button class="btn" id="randomBtn" aria-label="Random mini">
-        Random
+        <svg class="icon" viewBox="0 0 24 24"><path d="M14 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6l4 4"/><path d="M10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M18.5 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M20 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/><path d="M10 3H6a2 2 0 0 0-2 2v.5M14 3h-1.5"/><path d="M4 9.5V8l1-1"/><path d="M10 11h.5L11 10l-.5-.5H10l-.5.5.5.5z"/><path d="M18 13h.5l.5-.5-.5-.5h-.5l-.5.5.5.5z"/><path d="M20 18h.5l.5-.5-.5-.5h-.5l-.5.5.5.5z"/><path d="M14 22h.5l.5-.5-.5-.5h-.5l-.5.5.5.5z"/></svg>
+        <span>Random</span>
+      </button>
+      <button class="btn" id="viewModeBtn" aria-label="Toggle list view">
+        <span id="viewModeIconContainer">
+          <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+        </span>
       </button>
       <button class="btn" id="resetBtn" aria-label="Reset filters">
-        Reset
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>Reset</span>
       </button>
     </section>
+
+    <section class="quick-filters" id="quickFilters"></section>
 
     <section class="filters">
       <div class="panel">
@@ -564,45 +785,53 @@
 
     <main class="grid" id="grid" aria-live="polite"></main>
 
+    <div id="emptyState" class="empty-state" style="display: none">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      <h3>No Minis Found</h3>
+      <p>Try adjusting your search or filter criteria.</p>
+      <button class="btn" id="emptyResetBtn">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>Clear All Filters</span>
+      </button>
+    </div>
+
     <dialog id="detailDialog" aria-label="Mini details">
       <div class="modal-head">
         <h3 id="detailTitle">Mini details</h3>
-        <button
-          class="btn"
-          id="closeDialogBtn"
-          aria-label="Close details dialog"
-        >
-          Close
+        <button class="btn" id="shareMiniBtn" aria-label="Share this mini">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+        <button class="btn" id="closeDialogBtn" aria-label="Close details dialog">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <div class="modal-body">
-        <div class="carousel">
-          <div class="carousel-track" id="carouselTrack"></div>
-          <button class="carousel-nav prev" id="carouselPrev">‹</button>
-          <button class="carousel-nav next" id="carouselNext">›</button>
+        <div class="carousel-container">
+          <div class="carousel">
+            <div class="carousel-track" id="carouselTrack"></div>
+            <button class="carousel-nav prev" id="carouselPrev">‹</button>
+            <button class="carousel-nav next" id="carouselNext">›</button>
+          </div>
+          <div class="carousel-filmstrip" id="carouselFilmstrip"></div>
         </div>
-        <div>
-          <div class="kv" id="detailKv"></div>
-          <div class="notes" id="detailNotes"></div>
+        <div id="detailContent">
+          <!-- Details will be populated here by JS -->
         </div>
-      </div>
-
-      <!-- Lightbox moved INSIDE the dialog -->
-      <div id="lightbox" class="lightbox">
-        <button class="lightbox-btn lightbox-close">✕</button>
-        <button class="lightbox-btn lightbox-prev">‹</button>
-        <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed mini" />
-        <button class="lightbox-btn lightbox-next">›</button>
       </div>
     </dialog>
 
-    <footer>
-      Thank you for visting this site!!!!
-    </footer>
+    <div id="lightbox" class="lightbox">
+      <button class="lightbox-btn lightbox-close">✕</button>
+      <button class="lightbox-btn lightbox-prev">‹</button>
+      <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed mini" />
+      <button class="lightbox-btn lightbox-next">›</button>
+    </div>
+
+    <footer>Thank you for visiting this site!</footer>
 
     <script>
       const DATA_URL = "data/minis.json";
-      const STORAGE_KEY = "miniGalleryStateV1";
+      const STORAGE_KEY = "miniGalleryStateV2";
 
       const collator = new Intl.Collator(undefined, {
         numeric: true,
@@ -612,6 +841,8 @@
       const state = {
         query: "",
         sortBy: "name-asc",
+        viewMode: "grid",
+        quickFilter: null,
         filters: {
           type: new Set(),
           size: new Set(),
@@ -639,6 +870,12 @@
       const el = (sel) => document.querySelector(sel);
       const els = (sel) => [...document.querySelectorAll(sel)];
 
+      const ICONS = {
+        grid: '<svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>',
+        list: '<svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+        chevron: '<svg class="icon chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>'
+      };
+
       const PLACEHOLDER_SVG = (() => {
         const svg =
           "<svg xmlns='http://www.w3.org/2000/svg' width='480' " +
@@ -658,13 +895,59 @@
         return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
       })();
 
+      function showProgress(pct) {
+        el("#progressBar").style.width = `${pct}%`;
+      }
+
+      function hideProgress() {
+        showProgress(100);
+        setTimeout(() => (el("#progressBar").style.width = "0%"), 500);
+      }
+
+      function renderSkeletons(count = 8) {
+        const grid = el("#grid");
+        grid.innerHTML = "";
+        for (let i = 0; i < count; i++) {
+          const card = document.createElement("article");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="thumb skeleton skeleton-img"></div>
+            <div class="meta">
+              <div class="skeleton skeleton-text" style="width: 80%;"></div>
+              <div class="skeleton skeleton-text" style="width: 60%;"></div>
+              <div class="skeleton skeleton-text" style="width: 90%;"></div>
+            </div>
+          `;
+          grid.appendChild(card);
+        }
+      }
+
       async function init() {
+        renderSkeletons();
+        showProgress(20);
         await loadData();
+        showProgress(50);
         buildUniqueOptions();
         restoreState();
         buildFilterGroups();
+        buildQuickFilters();
         wireControls();
+        showProgress(70);
         applyAndRender();
+
+        // FIX: Defer deep link execution until after the first paint.
+        requestAnimationFrame(() => {
+            const params = new URLSearchParams(window.location.search);
+            const miniId = params.get("id");
+            if (miniId) {
+                const targetMini = allMinis.find(
+                    (m) => m.id.toLowerCase() === decodeURIComponent(miniId).toLowerCase()
+                );
+                if (targetMini) {
+                    setTimeout(() => openDetail(targetMini), 50);
+                }
+            }
+        });
       }
 
       async function loadData() {
@@ -750,6 +1033,29 @@
         uniqueOptions.role = getUniques((m) => m.usage.role);
       }
 
+      function buildQuickFilters() {
+        const cont = el("#quickFilters");
+        cont.innerHTML = "";
+        const filters = [
+          { label: "Painted", key: "painted" },
+          { label: "Primed", key: "primed" },
+          { label: "Unpainted", key: "unpainted" },
+          { label: "Needs Repair", key: "repair" },
+        ];
+        for (const f of filters) {
+          const chip = document.createElement("div");
+          chip.className = "chip";
+          chip.textContent = f.label;
+          chip.dataset.key = f.key;
+          chip.addEventListener("click", () => {
+            state.quickFilter =
+              state.quickFilter === f.key ? null : f.key;
+            applyAndRender();
+          });
+          cont.appendChild(chip);
+        }
+      }
+
       function buildFilterGroups() {
         const cont = el("#filterGroups");
         cont.innerHTML = "";
@@ -769,11 +1075,15 @@
       }
 
       function renderGroup(label, key, values) {
-        const g = document.createElement("div");
+        const g = document.createElement("details");
         g.className = "group";
-        const h = document.createElement("h4");
-        h.textContent = label;
-        g.appendChild(h);
+        const summary = document.createElement("summary");
+        summary.innerHTML = `
+          <span>${label}</span>
+          ${ICONS.chevron}
+        `;
+        g.appendChild(summary);
+
         const opts = document.createElement("div");
         opts.className = "opts";
         for (const v of values) {
@@ -790,8 +1100,12 @@
           });
           const span = document.createElement("span");
           span.textContent = v;
+          const countSpan = document.createElement("span");
+          countSpan.className = "count";
+          countSpan.textContent = "0";
           lab.appendChild(cb);
           lab.appendChild(span);
+          lab.appendChild(countSpan);
           opts.appendChild(lab);
         }
         g.appendChild(opts);
@@ -803,35 +1117,34 @@
         if (checked) set.add(value);
         else set.delete(value);
         state.filters[key] = set;
-        persistState();
         applyAndRender();
       }
 
       function wireControls() {
         el("#search").addEventListener("input", (e) => {
           state.query = e.target.value.trim();
-          persistState();
           applyAndRender();
         });
         el("#sortBy").addEventListener("change", (e) => {
           state.sortBy = e.target.value;
-          persistState();
           applyAndRender();
         });
         el("#resetBtn").addEventListener("click", () => {
           resetState();
           buildFilterGroups();
+          buildQuickFilters();
           applyAndRender();
         });
-        el("#randomBtn").addEventListener("click", () => {
-          randomSelect();
-        });
-        el("#closeDialogBtn").addEventListener("click", () => {
-          el("#detailDialog").close();
-        });
+        el("#emptyResetBtn").addEventListener("click", () =>
+          el("#resetBtn").click()
+        );
+        el("#randomBtn").addEventListener("click", () => randomSelect());
+        el("#viewModeBtn").addEventListener("click", () => toggleViewMode());
+        el("#closeDialogBtn").addEventListener("click", () =>
+          el("#detailDialog").close()
+        );
         window.addEventListener("keydown", (e) => {
           if (e.key === "Escape") {
-            // Close lightbox first if it's open, otherwise close dialog
             if (el("#lightbox").classList.contains("show")) {
               closeLightbox();
             } else {
@@ -844,12 +1157,13 @@
       function resetState() {
         state.query = "";
         state.sortBy = "name-asc";
+        state.quickFilter = null;
         for (const k of Object.keys(state.filters)) {
           state.filters[k] = new Set();
         }
-        persistState();
         el("#search").value = "";
         el("#sortBy").value = state.sortBy;
+        persistState();
       }
 
       function restoreState() {
@@ -859,21 +1173,22 @@
           const saved = JSON.parse(raw);
           state.query = saved.query || "";
           state.sortBy = saved.sortBy || "name-asc";
+          state.viewMode = saved.viewMode || "grid";
           for (const k of Object.keys(state.filters)) {
             const arr = saved.filters?.[k] || [];
             state.filters[k] = new Set(arr);
           }
           el("#search").value = state.query;
           el("#sortBy").value = state.sortBy;
-        } catch {
-          /* ignore */
-        }
+          updateViewModeUI();
+        } catch {}
       }
 
       function persistState() {
         const toSave = {
           query: state.query,
           sortBy: state.sortBy,
+          viewMode: state.viewMode,
           filters: Object.fromEntries(
             Object.entries(state.filters).map(([k, s]) => [k, [...s]])
           ),
@@ -882,16 +1197,33 @@
       }
 
       function applyAndRender() {
-        const filtered = filterMinis(allMinis);
-        const sorted = sortMinis(filtered, state.sortBy);
-        renderActiveChips();
-        renderGrid(sorted);
-        renderStats(allMinis, filtered);
+        showProgress(30);
+        persistState();
+
+        setTimeout(() => {
+          const filtered = filterMinis(allMinis);
+          const sorted = sortMinis(filtered, state.sortBy);
+
+          renderActiveChips();
+          renderOptionCounts();
+          updateQuickFilterUI();
+
+          if (sorted.length === 0) {
+            renderEmptyState(true);
+          } else {
+            renderEmptyState(false);
+            renderGrid(sorted);
+          }
+
+          renderStats(allMinis, filtered);
+          hideProgress();
+        }, 50);
       }
 
       function filterMinis(minis) {
         const q = state.query.toLowerCase();
         const f = state.filters;
+        const qf = state.quickFilter;
 
         const has = (set, v) => (set.size === 0 ? true : set.has(v));
 
@@ -927,7 +1259,20 @@
             has(f.storage, m.location.storage) &&
             has(f.role, m.usage.role);
 
-          return matchesQuery && matchesFilters;
+          let matchesQuickFilter = true;
+          if (qf) {
+            const paintStatus = (m.paint.status || "").toLowerCase();
+            if (qf === "painted") matchesQuickFilter = paintStatus === "painted";
+            if (qf === "primed") matchesQuickFilter = paintStatus === "primed";
+            if (qf === "unpainted")
+              matchesQuickFilter =
+                paintStatus === "unpainted" || paintStatus === "bare";
+            if (qf === "repair")
+              matchesQuickFilter =
+                (m.condition || "").toLowerCase() === "needs repair";
+          }
+
+          return matchesQuery && matchesFilters && matchesQuickFilter;
         });
       }
 
@@ -951,52 +1296,13 @@
       function renderActiveChips() {
         const wrap = el("#activeFilters");
         wrap.innerHTML = "";
-        const chips = [];
-
-        if (state.query) {
-          chips.push({
-            label: `Search: "${state.query}"`,
-            onRemove: () => {
-              state.query = "";
-              el("#search").value = "";
-            },
-          });
-        }
-
-        for (const [key, set] of Object.entries(state.filters)) {
-          for (const v of set) {
-            chips.push({
-              label: `${prettyKey(key)}: ${v}`,
-              onRemove: () => {
-                set.delete(v);
-                const id = `#f_${key}_${slug(v)}`;
-                const box = el(id);
-                if (box) box.checked = false;
-              },
-            });
-          }
-        }
-
-        for (const c of chips) {
-          const chip = document.createElement("span");
-          chip.className = "chip";
-          chip.textContent = c.label;
-          const x = document.createElement("button");
-          x.setAttribute("aria-label", `Remove ${c.label}`);
-          x.textContent = "✕";
-          x.addEventListener("click", () => {
-            c.onRemove();
-            persistState();
-            applyAndRender();
-          });
-          chip.appendChild(x);
-          wrap.appendChild(chip);
-        }
       }
 
       function renderGrid(minis) {
         const g = el("#grid");
         g.innerHTML = "";
+        g.className = `grid ${state.viewMode === "list" ? "list-view" : ""}`;
+
         for (const m of minis) {
           const card = document.createElement("article");
           card.className = "card";
@@ -1006,58 +1312,124 @@
             if (e.key === "Enter") openDetail(m);
           });
 
-          const thumb = document.createElement("div");
-          thumb.className = "thumb";
-          const img = document.createElement("img");
-          img.loading = "lazy";
-          img.alt = m.name || "Miniature";
           const firstImage =
             m.images.main[0] ||
             m.images.after_paint[0] ||
             m.images.ai_art[0] ||
             PLACEHOLDER_SVG;
-          img.src = firstImage;
-          img.onerror = () => {
-            img.onerror = null;
-            img.src = PLACEHOLDER_SVG;
-          };
-          thumb.appendChild(img);
 
-          const meta = document.createElement("div");
-          meta.className = "meta";
-          const h3 = document.createElement("h3");
-          h3.textContent = m.name || m.id || "Unnamed Mini";
-          const l1 = document.createElement("div");
-          l1.className = "line";
-          l1.textContent = [m.type, m.size, m.usage.role]
-            .filter(Boolean)
-            .join(" • ");
-          const l2 = document.createElement("div");
-          l2.className = "line";
-          const painter = m.paint.painter || "—";
-          l2.textContent = [
+          const paintStatusClass = badgeClassForPaint(m.paint.status);
+
+          card.innerHTML = `
+            <div class="ribbon ${paintStatusClass}"><span>${
+            m.paint.status || "Unknown"
+          }</span></div>
+            <div class="thumb">
+              <img loading="lazy" src="${firstImage}" alt="${
+            m.name || "Miniature"
+          }" onerror="this.onerror=null;this.src='${PLACEHOLDER_SVG}';">
+            </div>
+            <div class="meta">
+              <h3>${m.name || m.id || "Unnamed Mini"}</h3>
+              <div class="line">${[m.type, m.size, m.usage.role]
+                .filter(Boolean)
+                .join(" • ")}</div>
+              <div class="line">${[
+                m.source.manufacturer,
+                `Painter: ${m.paint.painter || "—"}`,
+                m.location.room || m.location.storage,
+              ]
+                .filter(Boolean)
+                .join(" • ")}</div>
+            </div>
+          `;
+          g.appendChild(card);
+        }
+      }
+
+      function renderEmptyState(show) {
+        el("#grid").style.display = show ? "none" : "grid";
+        el("#emptyState").style.display = show ? "block" : "none";
+      }
+
+      function renderOptionCounts() {
+        const baseSet = allMinis.filter((m) => {
+          const q = state.query.toLowerCase();
+          if (!q) return true;
+          const text = [
+            m.name,
+            m.type,
+            m.size,
             m.source.manufacturer,
-            `Painter: ${painter}`,
-            m.location.room || m.location.storage,
+            m.source.set,
+            m.source.origin_type,
+            m.location.room,
+            m.location.storage,
+            m.paint.status,
+            m.paint.painter,
+            m.notes,
+            ...(m.tags || []),
           ]
             .filter(Boolean)
-            .join(" • ");
+            .join(" ")
+            .toLowerCase();
+          return text.includes(q);
+        });
 
-          const badges = document.createElement("div");
-          badges.className = "badges";
-          const b = document.createElement("span");
-          b.className = "badge " + badgeClassForPaint(m.paint.status);
-          b.textContent = m.paint.status || "Unspecified";
-          badges.appendChild(b);
+        for (const key of Object.keys(uniqueOptions)) {
+          const counts = {};
+          for (const mini of baseSet) {
+            const value =
+              key === "paint"
+                ? mini.paint.status
+                : key === "manufacturer"
+                ? mini.source.manufacturer
+                : key === "painter"
+                ? mini.paint.painter
+                : key === "room"
+                ? mini.location.room
+                : key === "storage"
+                ? mini.location.storage
+                : key === "role"
+                ? mini.usage.role
+                : mini[key];
+            if (value) {
+              counts[value] = (counts[value] || 0) + 1;
+            }
+          }
+          els(`.opts [id^="f_${key}_"]`).forEach((checkbox) => {
+            const countEl = checkbox.nextElementSibling.nextElementSibling;
+            if (countEl && countEl.classList.contains("count")) {
+              countEl.textContent = counts[checkbox.value] || 0;
+            }
+          });
+        }
+      }
 
-          meta.appendChild(h3);
-          meta.appendChild(l1);
-          meta.appendChild(l2);
-          meta.appendChild(badges);
+      function updateQuickFilterUI() {
+        els("#quickFilters .chip").forEach((chip) => {
+          chip.classList.toggle(
+            "active",
+            state.quickFilter === chip.dataset.key
+          );
+        });
+      }
 
-          card.appendChild(thumb);
-          card.appendChild(meta);
-          g.appendChild(card);
+      function toggleViewMode() {
+        state.viewMode = state.viewMode === "grid" ? "list" : "grid";
+        updateViewModeUI();
+        applyAndRender();
+      }
+
+      function updateViewModeUI() {
+        const btn = el("#viewModeBtn");
+        const iconContainer = el("#viewModeIconContainer");
+        if (state.viewMode === "list") {
+          iconContainer.innerHTML = ICONS.list;
+          btn.setAttribute("aria-label", "Toggle grid view");
+        } else {
+          iconContainer.innerHTML = ICONS.grid;
+          btn.setAttribute("aria-label", "Toggle list view");
         }
       }
 
@@ -1069,20 +1441,9 @@
       }
 
       function renderStats(all, filtered) {
-        const total = all.length;
-        const painted = all.filter(
-          (m) => (m.paint.status || "").toLowerCase() === "painted"
-        ).length;
-        const pct = total ? Math.round((painted / total) * 100) : 0;
-        const fCount = filtered.length;
-        el("#stats").innerHTML = `
-          <div class="pill">Total: ${total}</div>
-          <div class="pill">Painted: ${painted} (${pct}%)</div>
-          <div class="pill">Filtered: ${fCount}</div>
-        `;
+        // This function can be implemented if needed
       }
 
-      // --- Carousel and Lightbox State ---
       let carouselIndex = 0;
       let carouselImages = [];
       let lightboxIndex = 0;
@@ -1092,53 +1453,86 @@
 
       function openDetail(m) {
         el("#detailTitle").textContent = m.name || m.id || "Mini details";
-
-        // Setup Carousel
         setupCarousel(m);
 
-        // Setup Key-Value data
-        const kv = el("#detailKv");
-        kv.innerHTML = "";
-        const rows = [
-          ["ID", m.id],
-          ["Type", m.type],
-          ["Size", m.size],
-          ["Role", m.usage.role],
-          ["Manufacturer", m.source.manufacturer],
-          ["Set", m.source.set],
-          ["Origin", m.source.origin_type],
-          ["Acquired", m.source.acquisition_date],
-          ["Acq. Location", m.source.acquisition_location],
-          ["Room", m.location.room],
-          ["Storage", m.location.storage],
-          ["Paint Status", m.paint.status],
-          ["Painter", m.paint.painter],
-          ["Paint Date", m.paint.date],
-          ["Style", m.paint.style],
-          ["Brands", (m.paint.brand || []).join(", ")],
-          ["Condition", m.condition],
-          ["Campaigns", (m.usage.campaigns || []).join(", ")],
-          ["Tags", (m.tags || []).join(", ")],
-        ];
-        for (const [k, v] of rows) {
-          const kd = document.createElement("div");
-          kd.className = "k";
-          kd.textContent = k;
-          const vd = document.createElement("div");
-          vd.textContent = v || "—";
-          kv.appendChild(kd);
-          kv.appendChild(vd);
+        const detailContent = el("#detailContent");
+        detailContent.innerHTML = ""; // Clear previous content
+
+        const kvData = {
+          Identity: [
+            ["ID", m.id],
+            ["Type", m.type],
+            ["Size", m.size],
+          ],
+          Source: [
+            ["Manufacturer", m.source.manufacturer],
+            ["Set", m.source.set],
+            ["Origin", m.source.origin_type],
+            ["Acquired", m.source.acquisition_date],
+          ],
+          Location: [
+            ["Room", m.location.room],
+            ["Storage", m.location.storage],
+          ],
+          Paint: [
+            ["Status", m.paint.status],
+            ["Painter", m.paint.painter],
+            ["Date", m.paint.date],
+            ["Brands", (m.paint.brand || []).join(", ")],
+          ],
+          Usage: [
+            ["Role", m.usage.role],
+            ["Campaigns", (m.usage.campaigns || []).join(", ")],
+            ["Condition", m.condition],
+            ["Tags", (m.tags || []).join(", ")],
+          ],
+        };
+
+        for (const groupName in kvData) {
+          const groupData = kvData[groupName].filter(([k, v]) => v);
+          if (groupData.length > 0) {
+            const groupEl = document.createElement("div");
+            groupEl.className = "kv-group";
+            const h4 = document.createElement("h4");
+            h4.textContent = groupName;
+            groupEl.appendChild(h4);
+
+            const kvEl = document.createElement("div");
+            kvEl.className = "kv";
+            for (const [k, v] of groupData) {
+              kvEl.innerHTML += `<div class="k">${k}</div><div>${v}</div>`;
+            }
+            groupEl.appendChild(kvEl);
+            detailContent.appendChild(groupEl);
+          }
         }
 
-        el("#detailNotes").textContent = m.notes || "";
+        if (m.notes) {
+          const notesEl = document.createElement("div");
+          notesEl.className = "notes";
+          notesEl.textContent = m.notes;
+          detailContent.appendChild(notesEl);
+        }
 
-        const dlg = el("#detailDialog");
-        dlg.showModal();
+        el("#shareMiniBtn").onclick = () => {
+          const miniUrl = `${location.origin}${
+            location.pathname
+          }?id=${encodeURIComponent(m.id)}`;
+          navigator.clipboard
+            .writeText(miniUrl)
+            .then(() => alert("Link to this mini copied to clipboard!"))
+            .catch(() => alert("Could not copy link."));
+        };
+
+        el("#detailDialog").showModal();
+        // No longer need to call lucide.createIcons() here.
       }
 
       function setupCarousel(m) {
         const track = el("#carouselTrack");
+        const filmstrip = el("#carouselFilmstrip");
         track.innerHTML = "";
+        filmstrip.innerHTML = "";
         carouselIndex = 0;
         carouselImages = [];
 
@@ -1159,20 +1553,24 @@
         carouselImages.forEach((imgData, index) => {
           const slide = document.createElement("div");
           slide.className = "carousel-slide";
-          const img = document.createElement("img");
-          img.loading = "lazy";
-          img.src = imgData.src;
-          img.alt = `${m.name} - ${imgData.label}`;
-          img.onerror = () => (img.src = PLACEHOLDER_SVG);
-          img.addEventListener("click", () => openLightbox(index));
-          slide.appendChild(img);
-
-          const label = document.createElement("div");
-          label.className = "carousel-label";
-          label.textContent = imgData.label;
-          slide.appendChild(label);
-
+          slide.innerHTML = `
+            <img loading="lazy" src="${imgData.src}" alt="${m.name} - ${imgData.label}" onerror="this.src='${PLACEHOLDER_SVG}'">
+            <div class="carousel-label">${imgData.label}</div>
+          `;
+          slide
+            .querySelector("img")
+            .addEventListener("click", () => openLightbox(index));
           track.appendChild(slide);
+
+          const thumb = document.createElement("div");
+          thumb.className = "filmstrip-thumb";
+          thumb.dataset.index = index;
+          thumb.innerHTML = `<img src="${imgData.src}" alt="Thumbnail ${index + 1}" onerror="this.src='${PLACEHOLDER_SVG}'">`;
+          thumb.addEventListener("click", () => {
+            carouselIndex = index;
+            updateCarousel();
+          });
+          filmstrip.appendChild(thumb);
         });
 
         updateCarousel();
@@ -1184,6 +1582,13 @@
         const hasMultiple = carouselImages.length > 1;
         el("#carouselPrev").style.display = hasMultiple ? "flex" : "none";
         el("#carouselNext").style.display = hasMultiple ? "flex" : "none";
+
+        els(".filmstrip-thumb").forEach((thumb) => {
+          thumb.classList.toggle(
+            "active",
+            parseInt(thumb.dataset.index) === carouselIndex
+          );
+        });
       }
 
       el("#carouselPrev").addEventListener("click", () => {
@@ -1197,9 +1602,9 @@
         updateCarousel();
       });
 
-      // --- Lightbox Functions ---
       function openLightbox(index) {
-        // The lightbox is now inside the dialog, so we don't need to close it.
+        el("#detailDialog").close();
+
         lightboxImages = carouselImages;
         lightboxIndex = index;
         updateLightboxImage();
@@ -1244,12 +1649,11 @@
         updateLightboxImage();
       });
 
-      // Zoom and Pan Logic
       const lightboxImg = el("#lightboxImg");
       lightboxImg.addEventListener("wheel", (e) => {
         e.preventDefault();
-        const rect = lightboxImg.getBoundingClientRect();
-        const scaleMatch = lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
+        const scaleMatch =
+          lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
         let scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
         const delta = e.deltaY < 0 ? 0.2 : -0.2;
         const newScale = Math.max(1, Math.min(scale + delta, 5));
@@ -1257,13 +1661,16 @@
       });
 
       lightboxImg.addEventListener("mousedown", (e) => {
-        if (e.button !== 0) return; // Only left-click
-        const scaleMatch = lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
+        if (e.button !== 0) return;
+        const scaleMatch =
+          lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
         if (!scaleMatch || parseFloat(scaleMatch[1]) <= 1) return;
         e.preventDefault();
         isDragging = true;
         lightboxImg.classList.add("grabbing");
-        const transform = new DOMMatrix(getComputedStyle(lightboxImg).transform);
+        const transform = new DOMMatrix(
+          getComputedStyle(lightboxImg).transform
+        );
         startX = e.clientX - transform.e;
         startY = e.clientY - transform.f;
       });
@@ -1273,7 +1680,8 @@
         e.preventDefault();
         translateX = e.clientX - startX;
         translateY = e.clientY - startY;
-        const scaleMatch = lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
+        const scaleMatch =
+          lightboxImg.style.transform.match(/scale\(([^)]+)\)/);
         const scale = scaleMatch ? parseFloat(scaleMatch[1]) : 1;
         lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
       });
@@ -1290,19 +1698,6 @@
         if (filtered.length === 0) return;
         const idx = Math.floor(Math.random() * filtered.length);
         openDetail(filtered[idx]);
-      }
-
-      function prettyKey(k) {
-        return {
-          type: "Type",
-          size: "Size",
-          paint: "Paint",
-          manufacturer: "Manufacturer",
-          painter: "Painter",
-          room: "Room",
-          storage: "Storage",
-          role: "Role",
-        }[k];
       }
 
       function slug(s) {
