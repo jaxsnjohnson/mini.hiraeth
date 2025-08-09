@@ -2,7 +2,7 @@
   {
     "id": "07608dd7-1b7b-4ea5-ae29-a237fda8a4d7",
     "name": "Antinua Thiel",
-    "type": "Human",
+    "type": "Half-Elf",
     "size": "Medium",
     "source": {
       "manufacturer": "Wizkids",
@@ -125,6 +125,281 @@
     "images": {
       "main": [
         "images/minis/mini-wyss-folly-main.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": []
+    },
+    "tags": [],
+    "notes": ""
+  },
+  {
+    "id": "84e3dc87-96f3-4909-8261-ed8a69ec6541",
+    "name": "Lich",
+    "type": "Undead",
+    "size": "Medium",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "D&D NOLZUR'S MARVELOUS MINIATURES - LICH & MUMMY LORD",
+      "acquisition_date": "",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": ""
+    },
+    "location": {
+      "room": "Jax's Living Room",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Alden Ruby",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": "Rare"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/mini-lich.webp",
+        "images/minis/mini-lich_Background_Removed.webp"
+      ],
+      "before_paint": [
+        "images/minis/mini-lich-orignal-lichmummylord-frontcopy_1024x1024.jpg.webp",
+        "images/minis/mini-lich-orignal-lichmummylord-backcopy_1024x1024.jpg.webp",
+        "images/minis/mini-lich-orignal-lichandmummylord3_1024x1024.png.webp",
+        "images/minis/mini-lich-orignal-upm11-039_lich_upm_hiresrendercopy_1024x1024.png.webp"
+      ],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": [
+        "images/minis/mini-lich-refrence-upm11-039_lich_hiresrendercopy_1024x1024.png.webp"
+      ]
+    },
+    "tags": [],
+    "notes": ""
+  },
+  {
+    "id": "aa63ae39-327e-4b33-b9e6-8656af6d872d",
+    "name": "T-Rex",
+    "type": "Dio",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "D&D NOLZUR'S MARVELOUS MINIATURES: T-REX",
+      "acquisition_date": "",
+      "acquisition_location": "Guardians Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "Jax's Living Room",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Needs Touch-up",
+      "painter": "Jax SN Johnson",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [
+        "Icebeach"
+      ],
+      "role": "Monster",
+      "frequency": "Rare"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/t-rex.webp",
+        "images/minis/t-rex-headshot.webp"
+      ],
+      "before_paint": [
+        "images/minis/t-rex-front_1024x1024.jpg.webp",
+        "images/minis/t-rex-back_1024x1024.jpg.webp"
+      ],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": [
+        "images/minis/t-rex-refrence-trex_03_1024x1024.jpg.webp"
+      ]
+    },
+    "tags": [],
+    "notes": ""
+  },
+  {
+    "id": "598296d0-4c7f-4c8a-9f9d-e31fcd499ac2",
+    "name": "The Gryphon Tenebrous",
+    "type": "Gryphon",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "D&D NOLZUR'S MARVELOUS MINIATURES: GRIFFON",
+      "acquisition_date": "",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Jax SN Johnson",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": "Occasional"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/Tenebris.webp",
+        "images/minis/Tenebris_Background_Removed.webp"
+      ],
+      "before_paint": [
+        "images/minis/Tenebris-griffon-front_1024x1024.jpg.webp",
+        "images/minis/Tenebris-griffon-back_1024x1024.jpg.webp",
+        "images/minis/Tenebris-90191-griffon3_1024x1024.jpg.webp"
+      ],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": []
+    },
+    "tags": [],
+    "notes": ""
+  },
+  {
+    "id": "c1e35311-f953-4092-8c99-d78ac6502459",
+    "name": "Scratch",
+    "type": "Dog",
+    "size": "Small",
+    "source": {
+      "manufacturer": "",
+      "set": "",
+      "acquisition_date": "",
+      "acquisition_location": "",
+      "origin_type": ""
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Jax SN Johnson",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [
+        "Baldurs' Gate 3"
+      ],
+      "role": "NPC",
+      "frequency": ""
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/Scratch.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": []
+    },
+    "tags": [],
+    "notes": "This is from Baldurs' Gate 3"
+  },
+  {
+    "id": "efc9cf36-8722-4067-88ca-80c192787842",
+    "name": "Aboleth",
+    "type": "Farrealm",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "D&D NOLZUR'S MARVELOUS MINIATURES: ABOLETH",
+      "acquisition_date": "",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": "Rare"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/Abolith.webp",
+        "images/minis/Abolith-Background-Removed.webp"
+      ],
+      "before_paint": [
+        "images/minis/aboleth_01_1024x1024.jpg.webp",
+        "images/minis/aboleth_02_1024x1024.jpg.webp",
+        "images/minis/aboleth3_1024x1024.jpg.webp",
+        "images/minis/aboleth4_1024x1024.jpg.webp"
+      ],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": []
+    },
+    "tags": [],
+    "notes": ""
+  },
+  {
+    "id": "e2f74b11-5f01-4041-82b5-9ff5b61a9ac8",
+    "name": "OG Elandra",
+    "type": "Asimar",
+    "size": "Medium",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "",
+      "acquisition_date": "",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Jax SN Johnson",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Player Character",
+      "frequency": "Occasional"
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/Elandra-First.webp"
       ],
       "before_paint": [],
       "after_paint": [],
