@@ -452,5 +452,50 @@
     },
     "tags": [],
     "notes": ""
+  },
+  {
+    "id": "79bd5c95-d1c9-4d63-9ce2-2eb2965fc716",
+    "name": "Empyrean (Red)",
+    "type": "Titan,  Celestial",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "Monster Menagerie 3",
+      "acquisition_date": "2025-08-16",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Wizkids",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": ""
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/mini-Empyrean-nobackground.webp",
+        "images/minis/mini-Empyrean.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": []
+    },
+    "tags": [
+      "Titan",
+      "Celestial"
+    ],
+    "notes": ""
   }
 ]
