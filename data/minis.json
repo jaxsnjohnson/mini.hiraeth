@@ -545,45 +545,6 @@
     "notes": ""
   },
   {
-    "id": "new-mini-01",
-    "name": "",
-    "type": "",
-    "size": "",
-    "source": {
-      "manufacturer": "",
-      "set": "",
-      "acquisition_date": "",
-      "acquisition_location": "",
-      "origin_type": ""
-    },
-    "location": {
-      "room": "",
-      "storage": ""
-    },
-    "paint": {
-      "status": "",
-      "painter": "",
-      "date": "",
-      "style": "",
-      "brand": []
-    },
-    "usage": {
-      "campaigns": [],
-      "role": "",
-      "frequency": ""
-    },
-    "condition": "",
-    "images": {
-      "main": [],
-      "before_paint": [],
-      "after_paint": [],
-      "ai_art": [],
-      "reference": []
-    },
-    "tags": [],
-    "notes": ""
-  },
-  {
     "id": "a0dc4208-804b-4cec-94c8-ddb9012a3fe6",
     "name": "Kobold",
     "type": "Kobold",
