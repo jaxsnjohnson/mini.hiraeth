@@ -632,5 +632,49 @@
     },
     "tags": [],
     "notes": ""
+  },
+  {
+    "id": "5cca5edc-f017-4ba1-89a9-dba9f44bfeb1",
+    "name": "Green Slaad",
+    "type": "Slaad",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "Green Slaad 5e",
+      "acquisition_date": "2025-08-16",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": ""
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Wizkids",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": ""
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/Green-Slaad-5e-50th-Anniversary.webp",
+        "images/minis/Green-Slaad-5e-50th-Anniversary-Nobackground.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": [
+        "images/minis/50th-blind-box.jpg"
+      ]
+    },
+    "tags": [],
+    "notes": ""
   }
 ]
