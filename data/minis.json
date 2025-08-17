@@ -490,7 +490,9 @@
       "before_paint": [],
       "after_paint": [],
       "ai_art": [],
-      "reference": []
+      "reference": [
+        "images/minis/monster-menagerie-iii-booster.jpg"
+      ]
     },
     "tags": [
       "Titan",
