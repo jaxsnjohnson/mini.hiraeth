@@ -484,8 +484,8 @@
     "condition": "",
     "images": {
       "main": [
-        "images/minis/mini-Empyrean-nobackground.webp",
-        "images/minis/mini-Empyrean.webp"
+        "images/minis/Empyrean-Red.webp",
+        "images/minis/Empyrean-Red-nobackground.webp"
       ],
       "before_paint": [],
       "after_paint": [],
