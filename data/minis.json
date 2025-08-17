@@ -676,5 +676,50 @@
     },
     "tags": [],
     "notes": ""
+  },
+  {
+    "id": "d1e37cb6-f7f0-4fa5-a462-a5450e43edf9",
+    "name": "Gnoll",
+    "type": "Gnoll",
+    "size": "Large",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "50th Anniversary",
+      "acquisition_date": "2025-08-16",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": ""
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Wizkids",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "Monster",
+      "frequency": ""
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/Gnoll-5e-50th-Anniversary.webp",
+        "images/minis/Gnoll-5e-50th-Anniversary-Nobackground.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": [
+        "images/minis/Gnoll-5e-50th-Anniversary-ref.png",
+        "images/minis/50th-blind-box.jpg"
+      ]
+    },
+    "tags": [],
+    "notes": ""
   }
 ]
