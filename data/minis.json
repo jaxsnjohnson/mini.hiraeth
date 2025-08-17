@@ -721,5 +721,53 @@
     },
     "tags": [],
     "notes": ""
+  },
+  {
+    "id": "36e7caee-9fdf-439c-9b4f-db4886a6445a",
+    "name": "Strahd-Von-Zarovitch",
+    "type": "Vampire, Undead",
+    "size": "Medium",
+    "source": {
+      "manufacturer": "Wizkids",
+      "set": "50th Anniversary",
+      "acquisition_date": "2025-08-16",
+      "acquisition_location": "Guardian Games Corvallis",
+      "origin_type": "Retail Purchase"
+    },
+    "location": {
+      "room": "",
+      "storage": ""
+    },
+    "paint": {
+      "status": "Painted",
+      "painter": "Wizkids",
+      "date": "",
+      "style": "",
+      "brand": []
+    },
+    "usage": {
+      "campaigns": [],
+      "role": "NPC",
+      "frequency": ""
+    },
+    "condition": "",
+    "images": {
+      "main": [
+        "images/minis/50th-strahd-1-4.webp",
+        "images/minis/50th-strahd-2-4.webp",
+        "images/minis/50th-strahd-3-4.webp",
+        "images/minis/50th-strahd-4-4.webp",
+        "images/minis/50th-strahd-4-4-Nobackground.webp"
+      ],
+      "before_paint": [],
+      "after_paint": [],
+      "ai_art": [],
+      "reference": [
+        "images/minis/50th-strahd-ref.png",
+        "images/minis/50th-blind-box.jpg"
+      ]
+    },
+    "tags": [],
+    "notes": ""
   }
 ]
